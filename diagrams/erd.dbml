@@ -62,7 +62,7 @@ Table Messages {
 Table TextMessages {
     TextMessageId INT [PK, INCREMENT]
     MessageId INT [ref: - Messages.MessageId]
-    Text Text
+    MessageText Text
 }
 
 Table FileShareMessages {
