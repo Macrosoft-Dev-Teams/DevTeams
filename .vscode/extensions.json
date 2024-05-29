@@ -3,5 +3,7 @@
       "dbaeumer.vscode-eslint",
       "esbenp.prettier-vscode",
       "streetsidesoftware.code-spell-checker",
-  ]
+      "hediet.vscode-drawio",
+      "matt-meyers.vscode-dbml"
+    ]
 }
