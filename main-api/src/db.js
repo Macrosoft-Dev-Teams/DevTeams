@@ -10,7 +10,7 @@
  * The MS-SQL module
  */
 
-import sql from 'mssql';
+const sql = require('mssql');
 
 const config = {
 	user: process.env.DB_USERNAME,
