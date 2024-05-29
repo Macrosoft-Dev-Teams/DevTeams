@@ -2,16 +2,17 @@
 
 Table Users {
     UserId INT [PK, INCREMENT]
+    Email VARCHAR[256] NOT NULL,
     DisplayName NVARCHAR[128]
     DeletedAt DATETIME [NULL]
-    DeletedBy INT [ref: > Users.UserId]
+    DeletedBy INT [ref: > Users.UserId, NULL]
 }
 
 Table AdminUsers {
     AdminUserId INT [PK, INCREMENT]
     UserId INT [ref: > Users.UserId]
     DeletedAt DATETIME [NULL]
-    DeletedBy INT [ref: > Users.UserId]
+    DeletedBy INT [ref: > Users.UserId, NULL]
 }
 
 Table Chats {
@@ -44,7 +45,7 @@ Table TeamMembershipTypes {
 }
 
 Table TeamMemberships {
-    UserTeamId INT [PK, INCREMENT]
+    TeamMembershipId INT [PK, INCREMENT]
     UserId INT [ref: > Users.UserId]
     TeamId INT [ref: > Teams.TeamId]
     MembershipTypeId INT [ref: > TeamMembershipTypes.TeamMembershipTypeId]
