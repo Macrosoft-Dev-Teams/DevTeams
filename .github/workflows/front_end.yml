@@ -1,0 +1,51 @@
+name: deploy-angular-to-eb
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'frontend/**'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install AWS CLI
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y python3-pip
+          pip3 install --upgrade awscli
+
+      - name: Assume the deploy pipeline user role
+        run: aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }} && aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }} && aws configure set region ${{ secrets.AWS_REGION }}
+
+      - name: Copy environment config
+        run: aws s3 cp s3://front-end/.env .
+
+      - name: Install Angular CLI
+        run: npm install -g @angular/cli
+
+      - name: Build Angular App
+        run: ng build --prod
+
+      - name: Zip Angular App with server.js
+        run: cd frontend/dist && zip -r ../../front-end-app.zip . ../../server.js
+
+      - name: Upload package to S3 bucket
+        run: aws s3 cp front-end-app.zip s3://front-end/
+
+      - name: Create new ElasticBeanstalk Application Version
+        run: |
+          aws elasticbeanstalk create-application-version \
+          --application-name front-end-app \
+          --source-bundle S3Bucket="front-end",S3Key="front-end-app.zip" \
+          --version-label "ver-${{ github.sha }}" \
+          --description "commit-sha-${{ github.sha }}"
+
+      - name: Deploy new ElasticBeanstalk Application Version
+        run: |
+          aws elasticbeanstalk update-environment --environment-name front-end-app-env --version-label "ver-${{ github.sha }}"

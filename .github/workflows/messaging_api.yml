@@ -1,0 +1,48 @@
+name: deploy-nodejs-to-eb
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Assume the deploy pipeline user role
+        uses: aws-actions/configure-aws-credentials@v4.0.1
+        with:
+          role-to-assume: ${{ secrets.AWS_ASSUME_ROLE }}
+          role-session-name: GitHub_to_AWS_via_FederatedOIDC
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Copy environment config
+        run: aws s3 cp s3://virtual-spider-zoo/.env .
+
+      - name: Set working directory to messagingAPI
+        run: cd messagingAPI
+
+      - name: Create ZIP deployment package
+        run: zip -r messaging-api-app.zip ./
+
+      - name: Upload package to S3 bucket
+        run: aws s3 cp messaging-api-app.zip s3://messaging-api/
+
+      - name: Create new ElasticBeanstalk Application Version
+        run: |
+          aws elasticbeanstalk create-application-version \
+          --application-name messaging-api-app \
+          --source-bundle S3Bucket="messaging-api",S3Key="messaging-api-app.zip" \
+          --version-label "ver-${{ github.sha }}" \
+          --description "commit-sha-${{ github.sha }}"
+
+      - name: Deploy new ElasticBeanstalk Application Version
+        run: |
+          aws elasticbeanstalk update-environment --environment-name messaging-api-app-env --version-label "ver-${{ github.sha }}"
