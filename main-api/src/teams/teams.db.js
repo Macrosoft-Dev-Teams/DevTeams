@@ -7,7 +7,7 @@ const getTeamMembershipTypeId = async (tx, description) => {
 	const request = tx.request();
 	const ret = await request.input('Description', description).query(q);
 
-  return ret.recordset[0].TeamMembershipTypeId;
+	return ret.recordset[0].TeamMembershipTypeId;
 };
 
 const createTeam = async (tx, teamName, creatorUserId) => {
