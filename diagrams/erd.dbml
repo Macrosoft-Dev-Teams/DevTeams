@@ -56,6 +56,7 @@ Table TeamMemberships {
 Table Messages {
     MessageId INT [PK, INCREMENT]
     ChatId INT [ref: > Chats.ChatId]
+    SentBy INT [ref: > Users.UserId]    
     SentAt DATETIME
     SavedAt DATETIME [NULL]
 }
