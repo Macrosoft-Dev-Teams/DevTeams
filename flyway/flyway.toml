@@ -112,4 +112,4 @@ ignoreWithEncryption = false
 ignoreWithNoCheck = true
 
 [environments.local]
-url = "jdbc:sqlserver://localhost:1433;authentication=sqlPassword;databaseName=dev-teams-local-db;password=password;user=bbd;encrypt=false;trustServerCertificate=true"
+url = "jdbc:sqlserver://localhost:1433;authentication=sqlPassword;databaseName=dev-teams-local-db;password=1-local-hive-password;user=atc;encrypt=false;trustServerCertificate=true"
