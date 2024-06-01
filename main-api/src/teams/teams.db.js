@@ -46,6 +46,25 @@ const createTeam = async (tx, teamName, creatorUserId) => {
 	return ret.recordset[0].teamId;
 };
 
+const updateTeamName = async (tx, teamName, teamId) => {
+	const q = `
+		UPDATE Teams 
+		SET TeamName = @TeamName 
+		WHERE TeamId = @TeamId;
+	
+  		SELECT @TeamName as teamName;
+  `;
+
+	const request = tx.request();
+	const ret = await request
+		.input('TeamName', teamName)
+		.input('TeamId', teamId)
+		.query(q);
+
+	return ret.recordset[0].teamName;
+};
+
 module.exports = {
 	createTeam,
+	updateTeamName,
 };
