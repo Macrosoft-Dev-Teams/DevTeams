@@ -30,6 +30,7 @@ jobs:
          ls
          npm cache clean --force
          npm install -g @angular/cli
+         npm install @angular-devkit/build-angular
          npm run build
 
       # - name: Build Angular App
