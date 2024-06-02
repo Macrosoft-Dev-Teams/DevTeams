@@ -33,7 +33,7 @@ const createTeam = async (tx, teamName, creatorUserId) => {
   INSERT INTO TeamMemberships(UserId, TeamId, MembershipTypeId)
     VALUES(@CreatorUserId, @TeamId, @TeamAdminMembershipTypeId);
     
-  SELECT @TeamId as teamId;
+  SELECT @TeamId AS teamId;
   `;
 
 	const request = tx.request();
@@ -52,8 +52,8 @@ const updateTeamName = async (tx, teamName, teamId) => {
 		SET TeamName = @TeamName 
 		WHERE TeamId = @TeamId;
 	
-  		SELECT @TeamName as teamName;
-  `;
+		SELECT @TeamName AS teamName;
+	`;
 
 	const request = tx.request();
 	const ret = await request
@@ -64,7 +64,72 @@ const updateTeamName = async (tx, teamName, teamId) => {
 	return ret.recordset[0].teamName;
 };
 
+const deleteTeam = async (tx, deletedBy, teamId) => {
+	const q = `
+		UPDATE TeamMemberships 
+		SET DeletedAt = GETDATE(), DeletedBy = @DeletedBy 
+		WHERE TeamId = @TeamId;
+
+		UPDATE Teams
+		SET DeletedAt = GETDATE(), DeletedBy = @DeletedBy 
+		WHERE TeamId = @TeamId;
+
+		SELECT @TeamId AS teamId;
+	`;
+
+	const request = tx.request();
+	const ret = await request
+		.input('DeletedBy', deletedBy)
+		.input('TeamId', teamId)
+		.query(q);
+	return ret.recordset[0].teamId;
+};
+
+const addTeamMember = async (tx, userId, teamId) => {
+	const teamAdminMembershipTypeId = await getTeamMembershipTypeId(
+		tx,
+		teamAdminMebershipTypeDescription,
+	);
+	const q = `
+		INSERT INTO TeamMemberships(UserId, TeamId, MembershipTypeId)
+		VALUES(@UserId, @TeamId, @MembershipTypeId);
+
+		DECLARE @TeamMembershipId INT = SCOPE_IDENTITY();
+		SELECT @TeamMembershipId AS teamMembershipId;
+	`;
+
+	const request = tx.request();
+	const ret = await request
+		.input('SenUserIdtBy', userId)
+		.input('TeamId', teamId)
+		.input('MembershipTypeId', teamAdminMembershipTypeId)
+		.query(q);
+	return ret.recordset[0].teamMembershipId;
+};
+
+const removeTeamMember = async (tx, deletedBy, userId, teamId) => {
+	const q = `
+		UPDATE TeamMemberships 
+		SET DeletedAt = GETDATE(), DeletedBy = @DeletedBy 
+		WHERE TeamId = @TeamId AND UserId = @UserId;
+
+		SELECT @TeamMembershipId AS teamMembershipId
+		WHERE TeamId = @TeamId AND UserId = @UserId;
+	`;
+
+	const request = tx.request();
+	const ret = await request
+		.input('DeletedBy', deletedBy)
+		.input('UserId', userId)
+		.input('TeamId', teamId)
+		.query(q);
+	return ret.recordset[0].teamMembershipId;
+};
+
 module.exports = {
 	createTeam,
 	updateTeamName,
+	deleteTeam,
+	addTeamMember,
+	removeTeamMember,
 };
