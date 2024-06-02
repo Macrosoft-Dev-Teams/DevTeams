@@ -36,7 +36,7 @@ jobs:
             ls
 
       - name: Upload package to S3 bucket
-        run: aws s3 cp /main-api/main-api-app.zip s3://${{ secrets.AWS_BUCKET }}/
+        run: aws s3 cp main-api-app.zip s3://${{ secrets.AWS_BUCKET }}/
 
       - name: Create new ElasticBeanstalk Application Version
         run: |
