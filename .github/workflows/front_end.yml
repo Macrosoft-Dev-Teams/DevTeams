@@ -21,10 +21,10 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Navigate to frontend directory
-        run: cd frontend    
+      # - name: Navigate to frontend directory
+      #   run: cd frontend    
 
-      - name: Install frontend dependencies and build app
+      - name: Install frontend dependencies
         run: | 
          cd frontend
          npm install
@@ -32,7 +32,7 @@ jobs:
       - name: Build Angular App
         run: |
           cd frontend
-          npm run build
+          ng build 
 
       - name: Assume the deploy pipeline user role
         uses: aws-actions/configure-aws-credentials@v4.0.1
@@ -50,7 +50,7 @@ jobs:
       - name: Create ZIP deployment package
         run: |
            cd messaging-api
-           zip -r ../angular-app.zip ./*
+           zip -r angular-app.zip ./*
 
       - name: Upload package to S3 bucket
         run: aws s3 cp angular-app.zip s3://${{ secrets.AWS_BUCKET }}/
