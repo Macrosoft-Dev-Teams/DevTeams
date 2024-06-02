@@ -53,16 +53,16 @@ jobs:
       - name: Create ZIP deployment package
         run: |
            cd frontend
-           zip -r ../angular-app.zip ./dist
+           zip -r ../main-api-app.zip ./dist
 
       - name: Upload package to S3 bucket
-        run: aws s3 cp angular-app.zip s3://${{ secrets.AWS_BUCKET }}/
+        run: aws s3 cp main-api-app.zip s3://${{ secrets.AWS_BUCKET }}/
 
       - name: Create new ElasticBeanstalk Application Version
         run: |
           aws elasticbeanstalk create-application-version \
           --application-name ${{ secrets.AWS_MAIN_APP }} \
-          --source-bundle S3Bucket="${{ secrets.AWS_BUCKET }}",S3Key="angular-app.zip" \
+          --source-bundle S3Bucket="${{ secrets.AWS_BUCKET }}",S3Key="main-api-app.zip" \
           --version-label "ver-${{ github.sha }}" \
           --description "commit-sha-${{ github.sha }}"
 
