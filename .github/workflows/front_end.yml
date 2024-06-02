@@ -2,7 +2,7 @@ name: deploy-angular-to-eb
 
 on:
   push:
-    branches: [main]
+    branches: [github-actions]
 
 permissions:
   contents: read
@@ -42,25 +42,27 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Copy environment config
-        run: aws s3 cp s3://devteamsbucket/.env .
+        run: aws s3 cp s3://${{ secrets.AWS_BUCKET }}/.env .
 
       - name: Set working directory to dist
         run: cd dist
 
       - name: Create ZIP deployment package
-        run: zip -r angular-app.zip ./
+        run: |
+           cd messaging-api
+           zip -r angular-app.zip ./*
 
       - name: Upload package to S3 bucket
-        run: aws s3 cp angular-app.zip s3://devteamsbucket/
+        run: aws s3 cp angular-app.zip s3://${{ secrets.AWS_BUCKET }}/
 
       - name: Create new ElasticBeanstalk Application Version
         run: |
           aws elasticbeanstalk create-application-version \
           --application-name dev-teams-app \
-          --source-bundle S3Bucket="devteamsbucket",S3Key="angular-app.zip" \
+          --source-bundle S3Bucket="${{ secrets.AWS_BUCKET }}",S3Key="angular-app.zip" \
           --version-label "ver-${{ github.sha }}" \
           --description "commit-sha-${{ github.sha }}"
 
       - name: Deploy new ElasticBeanstalk Application Version
         run: |
-          aws elasticbeanstalk update-environment --environment-name dev-teams-app-env --version-label "ver-${{ github.sha }}"
+          aws elasticbeanstalk update-environment --environment-name ${{ secrets.AWS_MAIN_APP_ENV }} --version-label "ver-${{ github.sha }}"
