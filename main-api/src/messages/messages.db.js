@@ -84,25 +84,8 @@ const getMessages = async (sentBy, chatId) => {
 	return ret.recordset;
 };
 
-const deleteMessage = async (tx, deletedBy, messageId) => {
-	const q = `
-    UPDATE Messages 
-    SET DeletedAt = GETDATE(), DeletedBy = @DeletedBy  
-    WHERE MessageId = @MessageId;
-    SELECT @MessageId as messageId;
-  `;
-
-	const request = tx.request();
-	const ret = await request
-		.input('DeletedBy', deletedBy)
-		.input('MessageId', messageId)
-		.query(q);
-	return ret.recordset[0].messageId;
-};
-
 module.exports = {
 	createTextMessage,
 	createFileShareMessage,
 	getMessages,
-	deleteMessage,
 };
