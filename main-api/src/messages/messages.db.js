@@ -2,11 +2,11 @@ const { db } = require('../db');
 
 const createMessage = async (tx, sentBy, chatId, sentAt) => {
 	const q = `
-        INSERT INTO Messages(SentBy, ChatId, SentAt, SavedAt)
-        VALUES(@SentBy, @ChatId, @SentAt, GETDATE());
+      INSERT INTO Messages(SentBy, ChatId, SentAt, SavedAt)
+      VALUES(@SentBy, @ChatId, @SentAt, GETDATE());
 
-        DECLARE @MessageId INT = SCOPE_IDENTITY();
-        SELECT @MessageId as messageId;
+      DECLARE @MessageId INT = SCOPE_IDENTITY();
+      SELECT @MessageId as messageId;
     `;
 
 	const request = tx.request();
@@ -21,11 +21,11 @@ const createMessage = async (tx, sentBy, chatId, sentAt) => {
 const createTextMessage = async (tx, sentBy, chatId, sentAt, messageText) => {
 	const messageId = await createMessage(tx, sentBy, chatId, sentAt);
 	const q = `
-        INSERT INTO TextMessages(MessageId, MessageText)
-        VALUES(@MessageId, @MessageText);
-        
-        DECLARE @TextMessageId INT = SCOPE_IDENTITY();
-        SELECT @TextMessageId as textMessageId;
+    INSERT INTO TextMessages(MessageId, MessageText)
+    VALUES(@MessageId, @MessageText);
+    
+    DECLARE @TextMessageId INT = SCOPE_IDENTITY();
+    SELECT @TextMessageId as textMessageId;
 	`;
 
 	const request = tx.request();
@@ -40,11 +40,11 @@ const createTextMessage = async (tx, sentBy, chatId, sentAt, messageText) => {
 const createFileShareMessage = async (tx, sentBy, chatId, sentAt, filePath) => {
 	const messageId = await createMessage(tx, sentBy, chatId, sentAt);
 	const q = `
-        INSERT INTO FileShareMessages(MessageId, FilePath)
-        VALUES(@MessageId, @FilePath);
-        
-        DECLARE @FileShareMessageId INT = SCOPE_IDENTITY();
-        SELECT @FileShareMessageId as fileShareMessageId;
+    INSERT INTO FileShareMessages(MessageId, FilePath)
+    VALUES(@MessageId, @FilePath);
+    
+    DECLARE @FileShareMessageId INT = SCOPE_IDENTITY();
+    SELECT @FileShareMessageId as fileShareMessageId;
 	`;
 
 	const request = tx.request();
