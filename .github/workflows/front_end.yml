@@ -29,7 +29,7 @@ jobs:
          cd frontend
          ls
          npm cache clean --force
-         npm install
+         npm ci
          npm update
          npm run build
 
