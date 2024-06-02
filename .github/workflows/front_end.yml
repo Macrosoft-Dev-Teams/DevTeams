@@ -24,19 +24,19 @@ jobs:
       # - name: Navigate to frontend directory
       #   run: cd frontend    
 
-      - name: Install frontend dependencies
+      - name: Install frontend dependencies and build app
         run: | 
          cd frontend
          ls
          npm cache clean --force
          npm install -g npm@latest
          npm install -g @angular/cli
+         npm run build
 
-
-      - name: Build Angular App
-        run: |
-          cd frontend
-          npm run build
+      # - name: Build Angular App
+      #   run: |
+      #     cd frontend
+      #     npm run build
 
       - name: Assume the deploy pipeline user role
         uses: aws-actions/configure-aws-credentials@v4.0.1
