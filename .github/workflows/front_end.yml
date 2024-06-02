@@ -27,6 +27,7 @@ jobs:
       - name: Install frontend dependencies
         run: | 
          cd frontend
+         npm install -g @angular/cli
          npm install
 
       - name: Build Angular App
