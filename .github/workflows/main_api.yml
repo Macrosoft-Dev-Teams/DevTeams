@@ -26,8 +26,8 @@ jobs:
       - name: Copy environment config
         run: aws s3 cp s3://${{ secrets.AWS_BUCKET }}/.env .
 
-      - name: Set working directory to main-api
-        run: cd main-api
+    #   - name: Set working directory to main-api
+    #     run: cd main-api
 
       - name: Create ZIP deployment package
         run: |
