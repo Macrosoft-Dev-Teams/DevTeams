@@ -7,9 +7,6 @@ defaultSchema = "dbo"
 locations = [ "filesystem:migrations", "filesystem:data" ]
 validateMigrationNaming = true
 
-  [flyway.check]
-  majorTolerance = 0
-
 [flyway.plugins.clean]
 mode = "all"
 
