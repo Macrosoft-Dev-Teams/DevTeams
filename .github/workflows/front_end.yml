@@ -27,6 +27,7 @@ jobs:
       - name: Install frontend dependencies
         run: | 
          cd frontend
+         ls
          npm install
 
       - name: Build Angular App
@@ -50,7 +51,7 @@ jobs:
       - name: Create ZIP deployment package
         run: |
            cd messaging-api
-           zip -r angular-app.zip ./*
+           zip -r ../angular-app.zip ./*
 
       - name: Upload package to S3 bucket
         run: aws s3 cp angular-app.zip s3://${{ secrets.AWS_BUCKET }}/
