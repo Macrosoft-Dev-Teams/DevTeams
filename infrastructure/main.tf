@@ -1,6 +1,6 @@
 # Create a Cognito User Pool
-resource "aws_cognito_user_pool" "DevTeams_user_pool" {
-  name = "DevTeams_user_pool"
+resource "aws_cognito_user_pool" "devteams_user_pool" {
+  name = "devteams_user_pool"
   mfa_configuration        = "ON"
   username_attributes = [ "email" ]
   auto_verified_attributes = ["email"]
@@ -39,12 +39,18 @@ resource "aws_cognito_user_pool" "DevTeams_user_pool" {
       priority = 1
     }
   }
+
+   # Device configuration block to enable device remembering
+  device_configuration {
+    challenge_required_on_new_device     = true
+    device_only_remembered_on_user_prompt = true
+  }
 }
 
 # Create a Cognito User Pool Client
-resource "aws_cognito_user_pool_client" "DevTeams_user_pool_client" {
-  name         = "DevTeams_user_pool_client"
-  user_pool_id = aws_cognito_user_pool.DevTeams_user_pool.id
+resource "aws_cognito_user_pool_client" "devteams_user_pool_client" {
+  name         = "devteams_user_pool_client"
+  user_pool_id = aws_cognito_user_pool.devteams_user_pool.id
   supported_identity_providers = [ "COGNITO" ]
   generate_secret = false
 
@@ -66,12 +72,12 @@ resource "aws_cognito_user_pool_client" "DevTeams_user_pool_client" {
     refresh_token = "hours"
   }
 
-  callback_urls = ["http://localhost:4200"]
-  # logout_urls   = ["https://example.com/logout"]
+  callback_urls = ["http://localhost:4200/home"]
+  logout_urls   = ["http://localhost:4200"]
 }
 
 # Create a Cognito User Pool Domain (for hosted UI)
-resource "aws_cognito_user_pool_domain" "DevTeams_user_pool_domain" {
-  domain       = "DevTeams-user-pool-domain"
-  user_pool_id = aws_cognito_user_pool.DevTeams_user_pool.id
+resource "aws_cognito_user_pool_domain" "devteams_user_pool_domain" {
+  domain       = "devteams-user-pool-domain"
+  user_pool_id = aws_cognito_user_pool.devteams_user_pool.id
 }

@@ -132,3 +132,5 @@ dist
 # Other
 /infrastructure/.terraform
 /infrastructure/.terraform.lock.hcl
+/infrastructure/terraform.tfstate.backup
+/infrastructure/terraform.tfstate

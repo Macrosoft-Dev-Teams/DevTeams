@@ -14,6 +14,8 @@ import {
 export class AuthService {
 	constructor() {}
 
+	// TODO: implement isLoggedIn()
+
 	async getCurrentUser(): Promise<AuthUser> {
 		return await getCurrentUser();
 	}
@@ -23,7 +25,7 @@ export class AuthService {
 	}
 
 	async getCurrentUserFullName(): Promise<string | undefined> {
-		let cognitoToken = await (await fetchAuthSession()).tokens;
+		let cognitoToken = (await fetchAuthSession()).tokens;
 		return cognitoToken?.idToken?.payload['name']?.toString();
 	}
 

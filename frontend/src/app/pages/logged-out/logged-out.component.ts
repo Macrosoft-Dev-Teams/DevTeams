@@ -7,4 +7,6 @@ import { Component } from '@angular/core';
 })
 export class LoggedOutComponent {
 
+  // TODO: implement navigation to login
+  // TODO: update sign in message
 }

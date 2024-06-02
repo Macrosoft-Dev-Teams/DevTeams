@@ -7,14 +7,18 @@ import { LoggedOutComponent } from './pages/logged-out/logged-out.component';
 
 const routes: Routes = [
   {
+    // TODO: add auth guard
     path: '',
     component: LoggedOutComponent
   },
   {
+    // TODO: disable direct path to cognito login
+    // TODO: add auth guard
     path: 'login',
     component: LoginComponent
   },
   {
+    // TODO: add auth guard
     path: 'home',
     component: HomeComponent
   },
