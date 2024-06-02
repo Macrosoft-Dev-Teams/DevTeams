@@ -1,6 +1,12 @@
 const { Router } = require('express');
 const { withTransaction } = require('../db');
-const { createTeam, updateTeamName } = require('./teams.db');
+const {
+	createTeam,
+	updateTeamName,
+	deleteTeam,
+	addTeamMember,
+	removeTeamMember,
+} = require('./teams.db');
 
 const teamsRouter = Router();
 
@@ -19,6 +25,36 @@ teamsRouter.put('/', (req, res) => {
 			req.body.teamId,
 		);
 		res.status(201).json({ teamName });
+	});
+});
+
+teamsRouter.delete('/', (req, res) => {
+	return withTransaction(async (tx) => {
+		const teamId = await deleteTeam(tx, res.locals.userId, req.body.teamId);
+		res.status(201).json({ teamId });
+	});
+});
+
+teamsRouter.post('/member', (req, res) => {
+	return withTransaction(async (tx) => {
+		const teamMembershipId = await addTeamMember(
+			tx,
+			req.body.userId,
+			req.body.teamId,
+		);
+		res.status(201).json({ teamMembershipId });
+	});
+});
+
+teamsRouter.delete('/member', (req, res) => {
+	return withTransaction(async (tx) => {
+		const teamMembershipId = await removeTeamMember(
+			tx,
+			res.locals.userId,
+			req.body.userId,
+			req.body.teamId,
+		);
+		res.status(201).json({ teamMembershipId });
 	});
 });
 
