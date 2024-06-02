@@ -1,0 +1,66 @@
+name: deploy-angular-to-eb
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '20'
+
+      # - name: Navigate to frontend directory
+      #   run: cd frontend    
+
+      - name: Install frontend dependencies
+        run: | 
+         cd frontend
+         npm install
+
+      - name: Build Angular App
+        run: |
+          cd frontend
+          ng build --configuration "production"
+
+      - name: Assume the deploy pipeline user role
+        uses: aws-actions/configure-aws-credentials@v4.0.1
+        with:
+          role-to-assume: ${{ secrets.AWS_ASSUME_ROLE }}
+          role-session-name: GitHub_to_AWS_via_FederatedOIDC
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Copy environment config
+        run: aws s3 cp s3://devteamsbucket/.env .
+
+      - name: Set working directory to dist
+        run: cd dist
+
+      - name: Create ZIP deployment package
+        run: zip -r angular-app.zip ./
+
+      - name: Upload package to S3 bucket
+        run: aws s3 cp angular-app.zip s3://devteamsbucket/
+
+      - name: Create new ElasticBeanstalk Application Version
+        run: |
+          aws elasticbeanstalk create-application-version \
+          --application-name dev-teams-app \
+          --source-bundle S3Bucket="devteamsbucket",S3Key="angular-app.zip" \
+          --version-label "ver-${{ github.sha }}" \
+          --description "commit-sha-${{ github.sha }}"
+
+      - name: Deploy new ElasticBeanstalk Application Version
+        run: |
+          aws elasticbeanstalk update-environment --environment-name dev-teams-app-env --version-label "ver-${{ github.sha }}"

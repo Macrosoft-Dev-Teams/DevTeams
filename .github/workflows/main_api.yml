@@ -1,0 +1,48 @@
+name: deploy-mainapi-to-eb
+
+on:
+  push:
+    branches: [github-actions]
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Assume the deploy pipeline user role
+        uses: aws-actions/configure-aws-credentials@v4.0.1
+        with:
+          role-to-assume: ${{ secrets.AWS_ASSUME_ROLE }}
+          role-session-name: GitHub_to_AWS_via_FederatedOIDC
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Copy environment config
+        run: aws s3 cp s3://devteamsbucket/.env .
+
+      - name: Set working directory to mainAPI
+        run: cd mainAPI
+
+      - name: Create ZIP deployment package
+        run: zip -r main-api-app.zip ./
+
+      - name: Upload package to S3 bucket
+        run: aws s3 cp main-api-app.zip s3://devteamsbucket/
+
+      - name: Create new ElasticBeanstalk Application Version
+        run: |
+          aws elasticbeanstalk create-application-version \
+          --application-name main-api-app \
+          --source-bundle S3Bucket="devteamsbucket",S3Key="main-api-app.zip" \
+          --version-label "ver-${{ github.sha }}" \
+          --description "commit-sha-${{ github.sha }}"
+
+      - name: Deploy new ElasticBeanstalk Application Version
+        run: |
+          aws elasticbeanstalk update-environment --environment-name main-api-app-env --version-label "ver-${{ github.sha }}"
