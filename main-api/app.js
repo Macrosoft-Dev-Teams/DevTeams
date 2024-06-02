@@ -1,10 +1,10 @@
 require('dotenv').config();
 
 const express = require('express');
-const { configRouter } = require('./config/config');
-const { teamsRouter } = require('./teams/teams.router');
-const { chatsRouter } = require('./chats/chats.router');
-const { auth } = require('./auth');
+const { configRouter } = require('./src/config/config');
+const { teamsRouter } = require('./src/teams/teams.router');
+const { chatsRouter } = require('./src/chats/chats.router');
+const { auth } = require('./src/auth');
 
 const PORT = process.env.PORT || 3001;
 const app = express();
