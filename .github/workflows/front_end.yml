@@ -27,6 +27,7 @@ jobs:
       - name: Install frontend dependencies and build app
         run: | 
          cd frontend
+         npm cache clean --force
          npm install
 
       - name: Build Angular App
