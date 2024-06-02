@@ -30,6 +30,7 @@ jobs:
          ls
          npm cache clean --force
          npm install
+         npm update
          npm run build
 
       # - name: Build Angular App
