@@ -34,7 +34,7 @@ jobs:
       - name: Build Angular App
         run: |
           cd frontend
-          ng build --configuration "production"
+          npm run build --configuration "production"
 
       - name: Assume the deploy pipeline user role
         uses: aws-actions/configure-aws-credentials@v4.0.1
