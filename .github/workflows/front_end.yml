@@ -29,9 +29,8 @@ jobs:
          cd frontend
          ls
          npm cache clean --force
-         npm install -g npm@latest
          npm install -g @angular/cli
-         npm install
+         npm install -g npm@latest
          npm run build
 
       # - name: Build Angular App
