@@ -4,6 +4,7 @@ const {
 	createTextMessage,
 	createFileShareMessage,
 	getMessages,
+	deleteMessage,
 } = require('./messages.db');
 
 const messagesRouter = Router();
@@ -34,6 +35,17 @@ messagesRouter.post('/file', (req, res) => {
 			req.body.chatId,
 			req.body.sentAt,
 			req.body.filePath,
+		);
+		res.status(201).json({ messageId });
+	});
+});
+
+messagesRouter.delete('/', (req, res) => {
+	return withTransaction(async (tx) => {
+		const messageId = await deleteMessage(
+			tx,
+			res.locals.userId,
+			req.body.messageId,
 		);
 		res.status(201).json({ messageId });
 	});
