@@ -31,8 +31,10 @@ jobs:
 
       - name: Create ZIP deployment package
         run: |
-          zip -r main-api-app.zip ./*
-          ls
+          cd main-api
+          zip -r ../main-api-app.zip ./*
+          ls ..
+      
 
       - name: Upload package to S3 bucket
         run: aws s3 cp main-api-app.zip s3://${{ secrets.AWS_BUCKET }}/main-api-app.zip
