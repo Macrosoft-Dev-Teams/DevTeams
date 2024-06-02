@@ -24,7 +24,7 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Copy environment config
-        run: aws s3 cp s3://devteamsbucket/.env .
+        run: aws s3 cp s3://${{ secrets.AWS_BUCKET }}/.env .
 
       - name: Set working directory to mainAPI
         run: cd mainAPI
@@ -33,13 +33,13 @@ jobs:
         run: zip -r main-api-app.zip ./
 
       - name: Upload package to S3 bucket
-        run: aws s3 cp main-api-app.zip s3://devteamsbucket/
+        run: aws s3 cp main-api-app.zip s3://${{ secrets.AWS_BUCKET }}/
 
       - name: Create new ElasticBeanstalk Application Version
         run: |
           aws elasticbeanstalk create-application-version \
           --application-name main-api-app \
-          --source-bundle S3Bucket="devteamsbucket",S3Key="main-api-app.zip" \
+          --source-bundle S3Bucket="${{ secrets.AWS_BUCKET }}",S3Key="main-api-app.zip" \
           --version-label "ver-${{ github.sha }}" \
           --description "commit-sha-${{ github.sha }}"
 
