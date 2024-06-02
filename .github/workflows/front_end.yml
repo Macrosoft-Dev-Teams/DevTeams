@@ -34,7 +34,8 @@ jobs:
       - name: Build Angular App
         run: |
           cd frontend
-          ng build 
+          ng build
+          ls 
 
       - name: Assume the deploy pipeline user role
         uses: aws-actions/configure-aws-credentials@v4.0.1
@@ -46,13 +47,13 @@ jobs:
       - name: Copy environment config
         run: aws s3 cp s3://${{ secrets.AWS_BUCKET }}/.env .
 
-      - name: Set working directory to dist
-        run: cd dist
+      # - name: Set working directory to dist
+      #   run: cd dist
 
       - name: Create ZIP deployment package
         run: |
-           cd messaging-api
-           zip -r angular-app.zip ./*
+           cd frontend
+           zip -r ../angular-app.zip ./dist
 
       - name: Upload package to S3 bucket
         run: aws s3 cp angular-app.zip s3://${{ secrets.AWS_BUCKET }}/
@@ -60,7 +61,7 @@ jobs:
       - name: Create new ElasticBeanstalk Application Version
         run: |
           aws elasticbeanstalk create-application-version \
-          --application-name dev-teams-app \
+          --application-name ${{ secrets.AWS_MAIN_APP }} \
           --source-bundle S3Bucket="${{ secrets.AWS_BUCKET }}",S3Key="angular-app.zip" \
           --version-label "ver-${{ github.sha }}" \
           --description "commit-sha-${{ github.sha }}"
