@@ -1,14 +1,16 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
+import { RouterOutlet } from '@angular/router';
+
 import { Amplify } from 'aws-amplify';
-import { AmplifyAuthenticatorModule } from "@aws-amplify/ui-angular";
+import { AmplifyAuthenticatorModule } from '@aws-amplify/ui-angular';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { environment } from '../environments/environment';
 import { LoginComponent } from './pages/login/login.component';
-import { HomeComponent } from './pages/home/home.component';
+
+import { environment } from '@src/environments/environment';
 
 Amplify.configure({
 	Auth: {
@@ -20,8 +22,13 @@ Amplify.configure({
 });
 
 @NgModule({
-	declarations: [AppComponent, LoginComponent, HomeComponent],
-	imports: [BrowserModule, AppRoutingModule, AmplifyAuthenticatorModule],
+	declarations: [AppComponent, LoginComponent],
+	imports: [
+		RouterOutlet,
+		BrowserModule,
+		AppRoutingModule,
+		AmplifyAuthenticatorModule,
+	],
 	providers: [],
 	bootstrap: [AppComponent],
 })
