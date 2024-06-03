@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component} from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-logged-out',
@@ -7,6 +8,10 @@ import { Component } from '@angular/core';
 })
 export class LoggedOutComponent {
 
-  // TODO: implement navigation to login
-  // TODO: update sign in message
+  constructor(private router: Router) {}
+
+  signIn(){
+
+    this.router.navigate(['/login']);
+  }
 }

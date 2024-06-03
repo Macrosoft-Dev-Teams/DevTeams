@@ -7,6 +7,8 @@ import { Component } from '@angular/core';
 })
 
 export class LoginComponent {
+	//TODO: implement callback urls
+
 	formFields = {
 		signUp: {
 			name: {
