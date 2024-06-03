@@ -45,7 +45,7 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Copy environment config
-        run: aws s3 cp s3://${{ secrets.AWS_BUCKET }}/.env .
+        run: aws s3 cp s3://${{ secrets.AWS_FRONTEND_BUCKET }}/.env .
 
       # - name: Set working directory to dist
       #   run: cd dist
@@ -56,16 +56,16 @@ jobs:
            zip -r ../angular-app.zip ./dist
 
       - name: Upload package to S3 bucket
-        run: aws s3 cp angular-app.zip s3://${{ secrets.AWS_BUCKET }}/
+        run: aws s3 cp angular-app.zip s3://${{ secrets.AWS_FRONTEND_BUCKET }}/
 
       - name: Create new ElasticBeanstalk Application Version
         run: |
           aws elasticbeanstalk create-application-version \
           --application-name ${{ secrets.AWS_FRONTEND_APP }} \
-          --source-bundle S3Bucket="${{ secrets.AWS_BUCKET }}",S3Key="angular-app.zip" \
+          --source-bundle S3Bucket="${{ secrets.AWS_FRONTEND_BUCKET }}",S3Key="angular-app.zip" \
           --version-label "ver-${{ github.sha }}" \
           --description "commit-sha-${{ github.sha }}"
 
       - name: Deploy new ElasticBeanstalk Application Version
         run: |
-          aws elasticbeanstalk update-environment --environment-name ${{ secrets.AWS_MAIN_APP_ENV }} --version-label "ver-${{ github.sha }}"
+          aws elasticbeanstalk update-environment --environment-name ${{ secrets.AWS_FRONTEND_APP_ENV }} --version-label "ver-${{ github.sha }}"

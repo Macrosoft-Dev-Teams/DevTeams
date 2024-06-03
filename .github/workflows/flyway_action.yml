@@ -1,0 +1,67 @@
+on:
+    push:
+      branches:
+        - main 
+  
+jobs: 
+    flyway_migration:
+      runs-on: self-hosted
+      steps:
+        - name: Checkout code
+          uses: actions/checkout@v2
+  
+        - name: Install OpenJDK
+          run: | 
+            sudo apt-get update
+            sudo apt-get install -y openjdk-11-jdk
+  
+        - name: Download and Unzip Flyway
+          run: |
+            wget -qO- https://repo1.maven.org/maven2/org/flywaydb/flyway-commandline/8.5.6/flyway-commandline-8.5.6-linux-x64.tar.gz | tar xvz
+            sudo rm -r /opt/flyway/flyway-8.5.6
+            sudo mv flyway-8.5.6 /opt/flyway
+            echo "Successfully updated the flyway download"
+  
+    migrate:
+      needs: flyway_migration
+      runs-on: self-hosted
+      steps:
+        - name: Fetch SSH Public Key from GitHub Secrets
+          run: echo "${{ secrets.SSH_KEY }}" > flywaykey.pub
+  
+        - name: Remove existing flywaykey.pub if it exists
+          run: |
+            if [ -f ~/.ssh/flywaykey.pub ]; then
+              rm ~/.ssh/flywaykey.pub
+            fi
+  
+        - name: Move SSH Public Key to ~/.ssh directory
+          run: |
+            mv flywaykey.pub ~/.ssh/  
+            echo "Working from here!!"
+  
+        - name: Copy migration Files from Git to Flyway Folder
+          run: |
+            ls
+            ls -l sql
+            # git clone "https://github.com/Farisanipaul/flywaymigrationtesting.git" 
+            rm -rf /opt/flyway/sql/*
+            cp -r sql/* /opt/flyway/sql/
+            ls -l /opt/flyway/sql 
+  
+        - name: Run Flyway Info
+          run: |
+            cd /opt/flyway
+            ./flyway -url="jdbc:sqlserver://${{ secrets.DB_BUILD_URL }}:1433;databaseName=${{ secrets.DB_SCHEMA }};encrypt=true;trustServerCertificate=true;" -user="${{ secrets.DB_BUILD_USERNAME }}" -password="${{ secrets.DB_BUILD_PASSWORD }}" info
+          continue-on-error: true
+  
+        - name: Run Flyway Baseline
+          run: |
+            cd /opt/flyway
+            ./flyway -url="jdbc:sqlserver://${{ secrets.DB_BUILD_URL }}:1433;databaseName=${{ secrets.DB_SCHEMA }};encrypt=true;trustServerCertificate=true;" -user="${{ secrets.DB_BUILD_USERNAME }}" -password="${{ secrets.DB_BUILD_PASSWORD }}" baseline
+          continue-on-error: true        
+  
+        - name: Run Flyway Migrate
+          run: |
+            cd /opt/flyway
+            ./flyway -url="jdbc:sqlserver://${{ secrets.DB_BUILD_URL }}:1433;databaseName=${{ secrets.DB_SCHEMA }};encrypt=true;trustServerCertificate=true;" -user="${{ secrets.DB_BUILD_USERNAME }}" -password="${{ secrets.DB_BUILD_PASSWORD }}" migrate
