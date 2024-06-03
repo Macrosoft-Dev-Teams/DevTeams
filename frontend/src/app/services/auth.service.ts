@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 
 import {
-	AuthUser,
 	getCurrentUser,
 	signOut,
 	fetchAuthSession,
@@ -14,10 +13,17 @@ import {
 export class AuthService {
 	constructor() {}
 
-	// TODO: implement isLoggedIn()
+	async getLogInStatus(): Promise<boolean> {
+		try {
+			await fetchAuthSession({ forceRefresh: true });
+			await getCurrentUser();
 
-	async getCurrentUser(): Promise<AuthUser> {
-		return await getCurrentUser();
+			return true;
+		} catch (error) {
+			// console.error('Error checking login status:', error);
+
+			return false;
+		}
 	}
 
 	async getCurrentSession(): Promise<AuthTokens | undefined> {
@@ -26,6 +32,7 @@ export class AuthService {
 
 	async getCurrentUserFullName(): Promise<string | undefined> {
 		let cognitoToken = (await fetchAuthSession()).tokens;
+
 		return cognitoToken?.idToken?.payload['name']?.toString();
 	}
 
