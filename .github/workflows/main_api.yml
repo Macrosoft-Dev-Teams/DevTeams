@@ -16,7 +16,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Assume the deploy pipeline user role on push
+      - name: Assume the deploy pipeline user role on push to action branch
         uses: aws-actions/configure-aws-credentials@v4.0.1
         with:
           role-to-assume: ${{ secrets.AWS_ASSUME_ROLE }}
