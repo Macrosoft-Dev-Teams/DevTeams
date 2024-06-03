@@ -1,4 +1,5 @@
 import { NgModule } from '@angular/core';
+import { ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { RouterOutlet } from '@angular/router';
@@ -10,7 +11,9 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { LoginComponent } from './pages/login/login.component';
 
-import { environment } from '@src/environments/environment';
+import { environment } from '@src/environments/environment.template';
+import { ChatInputComponent } from './components/chat-input/chat-input.component';
+import { provideHttpClient } from '@angular/common/http';
 
 Amplify.configure({
 	Auth: {
@@ -22,14 +25,15 @@ Amplify.configure({
 });
 
 @NgModule({
-	declarations: [AppComponent, LoginComponent],
+	declarations: [ChatInputComponent, AppComponent, LoginComponent],
 	imports: [
 		RouterOutlet,
 		BrowserModule,
 		AppRoutingModule,
 		AmplifyAuthenticatorModule,
+		ReactiveFormsModule,
 	],
-	providers: [],
+	providers: [provideHttpClient()],
 	bootstrap: [AppComponent],
 })
 export class AppModule {}
