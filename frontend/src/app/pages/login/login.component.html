@@ -1,0 +1,21 @@
+<section class="container">
+	<div class="logo-container">
+		<img src="icons/logo.png" alt="DevTeams" class="logo" />
+		<h1 class="title">DevTeams</h1>
+	</div>
+
+	<amplify-authenticator
+		[loginMechanisms]="['email']"
+		[formFields]="formFields"
+		[signUpAttributes]="['name']">
+
+		<ng-template
+			amplifySlot="authenticated"
+			let-user="user"
+			let-signOut="signOut">
+
+			<h1>Welcome {{ user.username }}!</h1>
+			<button (click)="signOut()">Sign Out</button>
+		</ng-template>
+	</amplify-authenticator>
+</section>

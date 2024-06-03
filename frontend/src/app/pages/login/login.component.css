@@ -1,0 +1,17 @@
+.container {
+  display: flex;
+  flex-direction: column;
+}
+
+.logo-container {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 2rem;
+}
+
+.logo {
+  width: 3rem;
+  height: auto;
+}

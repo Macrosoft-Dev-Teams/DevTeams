@@ -1,0 +1,5 @@
+ALTER TABLE Messages
+ADD SentBy INT NOT NULL
+
+ALTER TABLE Messages
+ADD CONSTRAINT fk_Messages_SentBy FOREIGN KEY (SentBy) REFERENCES Users(UserId)
