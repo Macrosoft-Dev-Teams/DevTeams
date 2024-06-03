@@ -23,6 +23,7 @@
     "no-var": "warn",
     "prefer-const": "warn",
     "prefer-template": "warn",
+    "arrow-spacing": "warn",
     "arrow-parens": ["warn", "always"],
     "object-curly-spacing": ["warn", "always"],
     "space-before-function-paren": ["warn", {
