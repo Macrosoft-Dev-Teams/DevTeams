@@ -11,7 +11,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { LoginComponent } from './pages/login/login.component';
 
-import { environment } from '@src/environments/environment.template';
+import { environment } from '@src/environments/environment';
 import { ChatInputComponent } from './components/chat-input/chat-input.component';
 import { provideHttpClient } from '@angular/common/http';
 
