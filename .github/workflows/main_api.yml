@@ -23,7 +23,7 @@ jobs:
           role-session-name: GitHub_to_AWS_via_FederatedOIDC
           aws-region: ${{ secrets.AWS_REGION }}
 
-      - name: Copy environment config
+      - name: Copy environment config from s3 bucket
         run: aws s3 cp s3://${{ secrets.AWS_BUCKET }}/.env .
 
       - name: Set working directory to main-api
