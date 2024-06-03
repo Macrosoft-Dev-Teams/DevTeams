@@ -63,9 +63,8 @@ jobs:
           aws elasticbeanstalk create-application-version \
           --application-name ${{ secrets.AWS_FRONTEND_APP }} \
           --source-bundle S3Bucket="${{ secrets.AWS_FRONTEND_BUCKET }}",S3Key="angular-app.zip" \
-          --version-label "Sample" \
           --description "commit-sha-${{ github.sha }}"
 
       - name: Deploy new ElasticBeanstalk Application Version
         run: |
-          aws elasticbeanstalk update-environment --environment-name ${{ secrets.AWS_FRONTEND_APP_ENV }} --version-label "Sample"
+          aws elasticbeanstalk update-environment --environment-name ${{ secrets.AWS_FRONTEND_APP_ENV }}
