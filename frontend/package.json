@@ -20,7 +20,9 @@
     "@angular/router": "^18.0.0",
     "@aws-amplify/ui-angular": "^5.0.16",
     "aws-amplify": "^6.3.4",
+    "javascript-time-ago": "^2.5.10",
     "rxjs": "~7.8.0",
+    "timeago.js": "^4.0.2",
     "tslib": "^2.3.0",
     "zone.js": "~0.14.3"
   },
