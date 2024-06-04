@@ -1,6 +1,5 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, HostListener, Input, Output } from '@angular/core';
 import { Chat } from '@src/app/interfaces';
-import { ApiService } from '@src/app/services/api.service';
 
 @Component({
   selector: 'app-chat-list-item',
@@ -10,8 +9,8 @@ import { ApiService } from '@src/app/services/api.service';
 export class ChatListItemComponent {
   @Input() chat: Partial<Chat> = {};
   @Output() dataEvent = new EventEmitter<number>();
-
-  onClick() {
+  
+  @HostListener("click") onClick(){
     const data = this.chat.chatId;
     this.dataEvent.emit(data);
   }
