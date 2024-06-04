@@ -36,19 +36,19 @@ const createChat = async (tx, creatorUserId, otherUserId) => {
 
 const getChats = async (userId) => {
 	const q = `
-	SELECT cht.ChatName AS chatName, msg.SavedAt AS lastMessageAt, msg.MessageText as messageText
+	SELECT cht.ChatId as chatId, cht.ChatName AS chatName, msg.SavedAt AS lastMessageAt, msg.MessageText as messageText
 	FROM Chats as cht
 	INNER JOIN (
 		SELECT ChatId FROM TeamChats as tc
 		INNER JOIN (
 			SELECT UserId, TeamId 
 			FROM TeamMemberships
-			WHERE UserId = 1
+			WHERE UserId = @UserId
 		) AS tm ON tm.TeamId = tc.TeamId
 		UNION
 		SELECT ChatId 
 		FROM UserChats as uc
-		WHERE UserId = 1
+		WHERE UserId = @UserId
 	) AS cids ON cids.ChatId = cht.ChatId
 	LEFT JOIN (
 		SELECT msgg.ChatId, msgg.SavedAt, tm.MessageText
