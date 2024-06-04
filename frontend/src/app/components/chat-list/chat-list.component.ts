@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Chat } from '@src/app/interfaces';
 import { ApiService } from '@src/app/services/api.service';
 import { BehaviorSubject, Observable, map } from 'rxjs';
@@ -10,6 +10,7 @@ import { BehaviorSubject, Observable, map } from 'rxjs';
 })
 export class ChatListComponent {
 	@Input() searchText?: Observable<string>;
+	@Output() onOpenChat = new EventEmitter<Chat>();
 	chats = new BehaviorSubject<Chat[]>([]);
 
 	constructor(private apiService: ApiService) {}
@@ -25,5 +26,9 @@ export class ChatListComponent {
 		this.searchText?.subscribe({
 			next: (text) => console.log(text),
 		});
+	}
+
+	onChatSelected(chat: Chat) {
+		this.onOpenChat.emit(chat);
 	}
 }

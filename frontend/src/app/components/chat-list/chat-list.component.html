@@ -1,5 +1,5 @@
 <ul *ngFor="let chat of chats | async">
-  <li>
+  <li (click)="onChatSelected(chat)" >
     <app-chat-list-item [chat]="chat"/>
   </li>
 </ul>

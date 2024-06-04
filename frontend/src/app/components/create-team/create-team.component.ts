@@ -8,7 +8,9 @@ import { ApiService } from '../../services/api.service';
   styleUrl: './create-team.component.css'
 })
 export class CreateTeamComponent {
-  @Output() dataEvent = new EventEmitter<string>();
+  @Output() onCreateTeamCancelled = new EventEmitter();
+  @Output() onTeamCreated = new EventEmitter();
+
   teamForm: FormGroup;
 
   constructor(private fb: FormBuilder, private apiService: ApiService) {
@@ -22,7 +24,7 @@ export class CreateTeamComponent {
 			alert('Please provide a name for your team.');
 		} else {
 			this.apiService.createTeam(this.teamForm.value.name!).subscribe({
-				next: () => {},
+				next: () => this.onTeamCreated.emit(),
 				error: (error) => {
 					alert(error);
 				},
@@ -31,7 +33,6 @@ export class CreateTeamComponent {
   }
 
   cancelNewTeamCreation() {
-    const data = 'Cancel new team plz';
-    this.dataEvent.emit(data);
+    this.onCreateTeamCancelled.emit();
   }
 }
