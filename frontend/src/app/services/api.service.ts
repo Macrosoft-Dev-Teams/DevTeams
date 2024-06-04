@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable, map } from 'rxjs';
 import { HttpService } from './http.service';
-import { WithMessageId } from '../interfaces';
+import { WithMessageId, WithTeamId } from '../interfaces';
 
 @Injectable({
 	providedIn: 'root',
@@ -15,5 +15,14 @@ export class ApiService {
 				messageText: message,
 			})
 			.pipe(map((response) => response.messageId));
+	}
+
+	// Teams
+	createTeam(name: string): Observable<number> {
+		return this.httpService
+			.post<WithTeamId>(`teams/`, {
+				teamName: name,
+			})
+			.pipe(map((response) => response.teamId));
 	}
 }

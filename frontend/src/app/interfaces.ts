@@ -6,3 +6,7 @@ export interface AppConfig {
 export interface WithMessageId {
   messageId: number,
 }
+
+export interface WithTeamId {
+  teamId: number,
+}
