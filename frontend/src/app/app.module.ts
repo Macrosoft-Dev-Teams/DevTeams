@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, Pipe, PipeTransform } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 
@@ -15,6 +15,21 @@ import { environment } from '@src/environments/environment';
 import { ChatInputComponent } from './components/chat-input/chat-input.component';
 import { CreateTeamComponent } from './components/create-team/create-team.component';
 import { provideHttpClient } from '@angular/common/http';
+import { MessagesListComponent } from './components/messages-list/messages-list.component';
+import TimeAgo from 'javascript-time-ago'
+import en from 'javascript-time-ago/locale/en'
+TimeAgo.addDefaultLocale(en);
+
+@Pipe({
+  name: 'asTimeAgo'
+})
+export class IsoTimeAgoPipe implements PipeTransform {
+	timeAgo = new TimeAgo("en-US");
+
+  transform(isoString: string): string {
+    return this.timeAgo.format(new Date(isoString));
+  }
+}
 
 Amplify.configure({
 	Auth: {
@@ -26,7 +41,7 @@ Amplify.configure({
 });
 
 @NgModule({
-	declarations: [CreateTeamComponent, ChatInputComponent, AppComponent, LoginComponent],
+	declarations: [IsoTimeAgoPipe, CreateTeamComponent, ChatInputComponent, AppComponent, LoginComponent, MessagesListComponent],
 	imports: [
 		RouterOutlet,
 		BrowserModule,

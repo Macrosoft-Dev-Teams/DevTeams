@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable, map } from 'rxjs';
 import { HttpService } from './http.service';
-import { WithMessageId, WithTeamId } from '../interfaces';
+import { WithMessageId, WithTeamId, Message } from '../interfaces';
 
 @Injectable({
 	providedIn: 'root',
@@ -17,7 +17,6 @@ export class ApiService {
 			.pipe(map((response) => response.messageId));
 	}
 
-	// Teams
 	createTeam(name: string): Observable<number> {
 		return this.httpService
 			.post<WithTeamId>(`teams/`, {
@@ -25,4 +24,8 @@ export class ApiService {
 			})
 			.pipe(map((response) => response.teamId));
 	}
+
+	listMessages(chatId: number): Observable<Message[]> {
+		return this.httpService.get<Message[]>(`chats/${chatId}/messages`);
+	}	
 }

@@ -58,12 +58,13 @@ const createFileShareMessage = async (tx, sentBy, chatId, sentAt, filePath) => {
 
 const getMessages = async (sentBy, chatId) => {
 	const q = `
-    SELECT u.DisplayName AS displayName, u.IsCurrentUser AS isCurrentUser, u.UserIsDeleted AS userIsDeleted, 
-      tm.MessageText AS messageText, fm.FilePath AS filePath, msg.SavedAt AS savedAt
+    SELECT u.DisplayName AS displayName, CAST(u.IsCurrentUser AS BIT) AS isCurrentUser, CAST(u.UserIsDeleted AS BIT) AS userIsDeleted, 
+      tm.MessageText AS messageText, fm.FilePath AS filePath, msg.SavedAt AS savedAt, msg.SentAt as sentAt,
+			msg.MessageId as messageId
     FROM Messages AS msg
     JOIN (
       SELECT UserId, DisplayName, 
-          CASE WHEN DeletedAt IS NULL THEN 'True' ELSE 'False' END AS UserIsDeleted,
+          CASE WHEN DeletedAt IS NULL THEN 'False' ELSE 'True' END AS UserIsDeleted,
           CASE WHEN UserId = @SentBy THEN 'True' ELSE 'False' END AS IsCurrentUser
       FROM Users
     ) AS u ON u.UserId = msg.SentBy

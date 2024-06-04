@@ -5,7 +5,7 @@ const {
 	createTextMessage,
 	createFileShareMessage,
 	getMessages,
-} = require('../messages/messages.db');
+} = require('./messages.db');
 
 const chatsRouter = Router();
 
@@ -47,19 +47,22 @@ chatsRouter.post('/:chatId/messages/file', (req, res) => {
 	});
 });
 
-chatsRouter.get('/:chatId', async (req, res) => {
-	const messages = await getMessages(res.locals.userId, req.params.chatId);
-	res.status(201).json(messages);
+chatsRouter.get('/:chatId/messages', async (req, res) => {
+	const messages = await getMessages(
+		res.locals.userId,
+		parseInt(req.params.chatId),
+	);
+	res.status(200).json(messages);
 });
 
 chatsRouter.get('/', async (req, res) => {
 	const chats = await getChats(res.locals.userId);
-	res.status(201).json(chats);
+	res.status(200).json(chats);
 });
 
 chatsRouter.get('/search', async (req, res) => {
 	const [users, teams] = await getSearch(res.locals.userId, req.body.searchStr);
-	res.status(201).json({ users, teams });
+	res.status(200).json({ users, teams });
 });
 
 module.exports = {
