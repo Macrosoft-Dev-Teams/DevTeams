@@ -35,6 +35,7 @@ export class IsoTimeAgoPipe implements PipeTransform {
 import { ChatListItemComponent } from './components/chat-list-item/chat-list-item.component';
 import { ChatListComponent } from './components/chat-list/chat-list.component';
 import { MainChatDetailsViewComponent } from './components/main-chat-details-view/main-chat-details-view.component';
+import { ChatsControllerComponent } from './components/chats-controller/chats-controller.component';
 
 Amplify.configure({
 	Auth: {
@@ -46,7 +47,7 @@ Amplify.configure({
 });
 
 @NgModule({
-	declarations: [IsoTimeAgoPipe, CreateTeamComponent, ChatInputComponent, AppComponent, LoginComponent, MessagesListComponent, ChatHeaderComponent, NavbarHeaderComponent, ChatListItemComponent, ChatListComponent, MainChatDetailsViewComponent],
+	declarations: [IsoTimeAgoPipe, CreateTeamComponent, ChatInputComponent, AppComponent, LoginComponent, MessagesListComponent, ChatHeaderComponent, NavbarHeaderComponent, ChatListItemComponent, ChatListComponent, MainChatDetailsViewComponent, ChatsControllerComponent],
 	imports: [
 		RouterOutlet,
 		BrowserModule,
