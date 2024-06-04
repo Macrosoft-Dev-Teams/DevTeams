@@ -17,7 +17,8 @@ import { CreateTeamComponent } from './components/create-team/create-team.compon
 import { provideHttpClient } from '@angular/common/http';
 import { MessagesListComponent } from './components/messages-list/messages-list.component';
 import TimeAgo from 'javascript-time-ago'
-import en from 'javascript-time-ago/locale/en'
+import en from 'javascript-time-ago/locale/en';
+import { ChatHeaderComponent } from './components/chat-header/chat-header.component'
 TimeAgo.addDefaultLocale(en);
 
 @Pipe({
@@ -41,7 +42,7 @@ Amplify.configure({
 });
 
 @NgModule({
-	declarations: [IsoTimeAgoPipe, CreateTeamComponent, ChatInputComponent, AppComponent, LoginComponent, MessagesListComponent],
+	declarations: [IsoTimeAgoPipe, CreateTeamComponent, ChatInputComponent, AppComponent, LoginComponent, MessagesListComponent, ChatHeaderComponent],
 	imports: [
 		RouterOutlet,
 		BrowserModule,
