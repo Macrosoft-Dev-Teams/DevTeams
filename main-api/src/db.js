@@ -40,7 +40,7 @@ let _connectionPool;
  *
  * @returns {sql.ConnectionPool} the connection pool (cached)
  */
-let connectionPool = async () => {
+const connectionPool = async () => {
 	if (!_connectionPool || !_connectionPool.connected) {
 		_connectionPool = await new sql.ConnectionPool(config).connect();
 	}
@@ -48,14 +48,14 @@ let connectionPool = async () => {
 	return _connectionPool;
 };
 
-let timed_query = (request) => async (command, name) => {
+const timed_query = (request) => async (command, name) => {
 	let response;
 	try {
 		response = await request.query(command);
 	} catch (error) {
 		// This code wraps the internal errors for the tedious library
 		// and allows the error stack to be properly set due to raising a new Error here.
-		let wrappedError = new Error(`Error executing ${name}`);
+		const wrappedError = new Error(`Error executing ${name}`);
 		wrappedError.causedBy = error;
 		throw wrappedError;
 	}
@@ -73,7 +73,7 @@ let timed_query = (request) => async (command, name) => {
  *
  * @see module:shared/db~timed_query
  */
-let input = (req) => {
+const input = (req) => {
 	return (param, value) => {
 		req._paramMap[param] = value;
 		return req._origInput(param, value);
@@ -92,9 +92,9 @@ let input = (req) => {
  * @returns {sql.Request} a decorated database request.
  */
 const db = async () => {
-	let pool = await connectionPool();
+	const pool = await connectionPool();
 
-	let request = await pool.request();
+	const request = await pool.request();
 
 	request.timed_query = timed_query(request);
 	request._paramMap = {};
@@ -113,11 +113,11 @@ const db = async () => {
  * @returns {sql.Transaction} a database transaction with decorated requests.
  */
 const transaction = async () => {
-	let pool = await connectionPool();
-	let tx = await pool.transaction();
+	const pool = await connectionPool();
+	const tx = await pool.transaction();
 
 	tx.timed_request = async () => {
-		let request = await tx.request();
+		const request = await tx.request();
 		request.timed_query = timed_query(request);
 		request._paramMap = {};
 		request._origInput = request.input;
@@ -149,10 +149,10 @@ const withTransaction = async (executable) => {
 	if (executable == undefined || !(executable instanceof Function)) {
 		throw new Error('Callback function required to execute in a transaction');
 	} else {
-		let tx = await transaction();
+		const tx = await transaction();
 		try {
 			await tx.begin();
-			let result = await executable(tx);
+			const result = await executable(tx);
 			await tx.commit();
 			return result;
 		} catch (error) {
