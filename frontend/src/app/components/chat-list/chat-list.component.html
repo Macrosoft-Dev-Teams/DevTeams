@@ -1,1 +1,5 @@
-<p>chat-list works!</p>
+<ul *ngFor="let chat of chats | async">
+  <li>
+    <app-chat-list-item [chat]="chat"/>
+  </li>
+</ul>

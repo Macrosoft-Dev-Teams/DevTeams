@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Chat } from '@src/app/interfaces';
 import { ApiService } from '@src/app/services/api.service';
 
 @Component({
@@ -7,15 +8,11 @@ import { ApiService } from '@src/app/services/api.service';
   styleUrl: './chat-list-item.component.css'
 })
 export class ChatListItemComponent {
-  @Input() id = -1;
-  @Input() name = '';
-  @Input() lastMessage = '';
-  @Output() dataEvent = new EventEmitter<string>();
-
-  constructor(private apiService: ApiService) {}
+  @Input() chat: Partial<Chat> = {};
+  @Output() dataEvent = new EventEmitter<number>();
 
   onClick() {
-    const data = this.id.toString();
+    const data = this.chat.chatId;
     this.dataEvent.emit(data);
   }
 }
