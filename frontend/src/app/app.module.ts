@@ -13,6 +13,7 @@ import { LoginComponent } from './pages/login/login.component';
 
 import { environment } from '@src/environments/environment';
 import { ChatInputComponent } from './components/chat-input/chat-input.component';
+import { CreateTeamComponent } from './components/create-team/create-team.component';
 import { provideHttpClient } from '@angular/common/http';
 
 Amplify.configure({
@@ -25,7 +26,7 @@ Amplify.configure({
 });
 
 @NgModule({
-	declarations: [ChatInputComponent, AppComponent, LoginComponent],
+	declarations: [CreateTeamComponent, ChatInputComponent, AppComponent, LoginComponent],
 	imports: [
 		RouterOutlet,
 		BrowserModule,
