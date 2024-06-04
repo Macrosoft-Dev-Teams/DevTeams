@@ -1,0 +1,8 @@
+<ul *ngFor="let message of messages | async">
+  <li>
+    <em>{{ message.displayName }}</em>
+    <p>{{ message.messageText }}</p>
+    <footer>{{ message.sentAt | asTimeAgo }}</footer>
+  </li>
+</ul>
+<app-chat-input [chatId]="chatId" (onMessageSent)="onMessageSent($event)" />
