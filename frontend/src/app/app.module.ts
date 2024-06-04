@@ -15,6 +15,8 @@ import { environment } from '@src/environments/environment';
 import { ChatInputComponent } from './components/chat-input/chat-input.component';
 import { CreateTeamComponent } from './components/create-team/create-team.component';
 import { provideHttpClient } from '@angular/common/http';
+import { ChatListItemComponent } from './components/chat-list-item/chat-list-item.component';
+import { ChatListComponent } from './components/chat-list/chat-list.component';
 
 Amplify.configure({
 	Auth: {
@@ -26,7 +28,7 @@ Amplify.configure({
 });
 
 @NgModule({
-	declarations: [CreateTeamComponent, ChatInputComponent, AppComponent, LoginComponent],
+	declarations: [CreateTeamComponent, ChatInputComponent, AppComponent, LoginComponent, ChatListItemComponent, ChatListComponent],
 	imports: [
 		RouterOutlet,
 		BrowserModule,
