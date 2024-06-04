@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable, map } from 'rxjs';
 import { HttpService } from './http.service';
-import { WithMessageId, WithTeamId, Message } from '../interfaces';
+import { WithMessageId, WithTeamId, Message, Chat } from '../interfaces';
 
 @Injectable({
 	providedIn: 'root',
@@ -27,5 +27,9 @@ export class ApiService {
 
 	listMessages(chatId: number): Observable<Message[]> {
 		return this.httpService.get<Message[]>(`chats/${chatId}/messages`);
+	}	
+
+	listChats(): Observable<Chat[]> {
+		return this.httpService.get<Chat[]>(`chats/`);
 	}	
 }

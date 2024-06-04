@@ -36,25 +36,31 @@ const createChat = async (tx, creatorUserId, otherUserId) => {
 
 const getChats = async (userId) => {
 	const q = `
-		SELECT cht.ChatName AS chatName, msg.LastSavedAt AS lastMessageAt FROM Chats as cht
+	SELECT cht.ChatId as chatId, cht.ChatName AS chatName, msg.SavedAt AS lastMessageAt, msg.MessageText as messageText
+	FROM Chats as cht
+	INNER JOIN (
+		SELECT ChatId FROM TeamChats as tc
 		INNER JOIN (
-			SELECT ChatId FROM TeamChats as tc
-			INNER JOIN (
-				SELECT UserId, TeamId 
-				FROM TeamMemberships
-				WHERE UserId = @UserId
-			) AS tm ON tm.TeamId = tc.TeamId
-			UNION
-			SELECT ChatId 
-			FROM UserChats as uc
+			SELECT UserId, TeamId 
+			FROM TeamMemberships
 			WHERE UserId = @UserId
-		) AS cids ON cids.ChatId = cht.ChatId
-		LEFT JOIN (
-			SELECT ChatId, MAX(SavedAt) as LastSavedAt
-			FROM Messages
-			GROUP BY ChatId
-		) AS msg ON msg.ChatId = cht.ChatId
-		ORDER BY msg.LastSavedAt DESC;
+		) AS tm ON tm.TeamId = tc.TeamId
+		UNION
+		SELECT ChatId 
+		FROM UserChats as uc
+		WHERE UserId = @UserId
+	) AS cids ON cids.ChatId = cht.ChatId
+	LEFT JOIN (
+		SELECT msgg.ChatId, msgg.SavedAt, tm.MessageText
+		FROM (
+			 SELECT *,
+				 ROW_NUMBER() OVER (PARTITION BY ChatId ORDER BY SavedAt DESC) AS rn
+			 FROM Messages
+		) AS msgg
+		LEFT JOIN TextMessages AS tm ON msgg.MessageId = tm.MessageId
+		WHERE msgg.rn = 1
+	) AS msg ON msg.ChatId = cht.ChatId
+	ORDER BY msg.SavedAt DESC;
 	`;
 
 	const request = await db();
