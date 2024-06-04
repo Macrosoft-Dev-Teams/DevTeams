@@ -21,3 +21,8 @@ export interface Message {
 	sentAt: string,
 	messageId: number,	
 }
+
+export interface Chat {
+	chatName: string;
+	lastMessageAt?: string;
+}
