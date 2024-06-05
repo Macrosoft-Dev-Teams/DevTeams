@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 
 import {
 	getCurrentUser,
@@ -11,18 +12,25 @@ import {
 	providedIn: 'root',
 })
 export class AuthService {
-	constructor() {}
+	constructor(private router: Router) {}
 
 	async getLogInStatus(): Promise<boolean> {
 		try {
 			await fetchAuthSession({ forceRefresh: true });
-			await getCurrentUser();
+			const user = await getCurrentUser();
 
-			return true;
+			return user !== undefined;
 		} catch (error) {
-			// console.error('Error checking login status:', error);
-
+			
 			return false;
+		}
+	}
+
+	async handleAuthenticatedUser() {
+		const isLoggedIn = await this.getLogInStatus();
+		
+		if (isLoggedIn) {
+			this.router.navigate(['/home']);
 		}
 	}
 
