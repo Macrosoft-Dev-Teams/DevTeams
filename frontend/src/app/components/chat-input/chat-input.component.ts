@@ -27,7 +27,9 @@ export class ChatInputComponent {
 						displayName: "You",
 						isCurrentUser: true,
 						userIsDeleted: false,
-						messageText: this.newMessage.value!.length > this.limit ? this.newMessage.value!.substring(0,this.limit) : this.newMessage.value!,
+						messageText: this.newMessage.value!.length > this.limit 
+						    ? this.newMessage.value!.substring(0,this.limit) 
+						    : this.newMessage.value!,
 						savedAt: currentIsoTime,
 						sentAt: currentIsoTime,
 						messageId
