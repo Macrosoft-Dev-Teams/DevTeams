@@ -1,8 +1,8 @@
-<app-chats-controller (onOpenChat)="onChatSelected($event)" (onCreateNewTeam)="onCreateNewTeam()" />
+<app-chats-controller [newTeamIds]="newTeamIdsObservable" (onOpenChat)="onChatSelected($event)" (onCreateNewTeam)="onCreateNewTeam()" />
 @if(creatingNewTeam) {
 	<app-create-team
 		(onCreateTeamCancelled)="onCreateTeamCancelled()"
-		(onTeamCreated)="onTeamCreated()"
+		(onTeamCreated)="onTeamCreated($event)"
 	/>
 } @else {
   @if (currentChat) {
