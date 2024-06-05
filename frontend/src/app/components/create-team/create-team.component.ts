@@ -11,7 +11,7 @@ import { ToastrService } from 'ngx-toastr';
 export class CreateTeamComponent {
   @Output() onCreateTeamCancelled = new EventEmitter();
   @Output() onTeamCreated = new EventEmitter();
-
+  limit = 128;
   teamForm: FormGroup;
 
   constructor(private fb: FormBuilder, private apiService: ApiService, private toastr: ToastrService) {
@@ -24,7 +24,11 @@ export class CreateTeamComponent {
     if (this.teamForm.value.name?.trim().length === 0) {
       this.toastr.warning('No team name!', 'Please provide a name for your team.');
 		} else {
-			this.apiService.createTeam(this.teamForm.value.name!).subscribe({
+			this.apiService.createTeam(
+        this.teamForm.value.name!.length > this.limit 
+          ? this.teamForm.value.name!.substring(0,this.limit) 
+          : this.teamForm.value.name!
+      ).subscribe({
 				next: () => this.onTeamCreated.emit(),
 				error: (error) => {
 					this.toastr.error('Error!', error);

@@ -4,7 +4,7 @@
         <p>Enter team name and choose display photo</p>
     </section> 
     <form [formGroup]="teamForm" id="team-form" class="form-container" (ngSubmit)="onTeamSubmit()">
-        <input type="text" name="name" formControlName="name" placeholder="Team name"/>
+        <input type="text" name="name" formControlName="name" placeholder="Team name" maxlength="128"/>
         <button id="submit" type="submit">Create Team</button>
     </form>
     <button class="cancel-button" (click)="cancelNewTeamCreation()">
