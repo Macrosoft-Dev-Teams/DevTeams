@@ -9,10 +9,18 @@ const {
 } = require('./teams.db');
 
 const teamsRouter = Router();
+const teamNameLimit = 128;
 
 teamsRouter.post('/', (req, res) => {
 	return withTransaction(async (tx) => {
-		const teamId = await createTeam(tx, req.body.teamName, 1);
+		const teamId = await createTeam(
+			tx,
+			req.body.teamName.substring(
+				0,
+				Math.min(teamNameLimit, req.body.teamName.length),
+			),
+			1,
+		);
 		res.status(201).json({ teamId });
 	});
 });
