@@ -21,6 +21,7 @@ export class CreateTeamComponent {
 
   onTeamSubmit() {
     if (this.teamForm.value.name?.trim().length === 0) {
+       // TODO: implement alert component
 			alert('Please provide a name for your team.');
 		} else {
 			this.apiService.createTeam(
