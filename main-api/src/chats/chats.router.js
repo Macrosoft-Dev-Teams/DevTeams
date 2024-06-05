@@ -8,6 +8,7 @@ const {
 } = require('./messages.db');
 
 const chatsRouter = Router();
+const textLimit = 2000;
 
 // TODO: Should create new chat or return existing chat. Only one chat between two users.
 chatsRouter.post('/', (req, res) => {
@@ -28,7 +29,10 @@ chatsRouter.post('/:chatId/messages/text', (req, res) => {
 			res.locals.userId,
 			parseInt(req.params.chatId),
 			new Date(),
-			req.body.messageText,
+			req.body.messageText.substring(
+				0,
+				Math.min(textLimit, req.body.messageText.length),
+			),
 		);
 		res.status(201).json({ messageId });
 	});

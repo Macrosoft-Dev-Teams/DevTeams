@@ -12,6 +12,7 @@ export class ChatInputComponent {
   @Input() chatId = -1;
 	@Output() onMessageSent = new EventEmitter<Message>();
 	newMessage = new FormControl('');
+	limit = 2000;
 
 	constructor(private apiService: ApiService) {}
 
@@ -26,7 +27,9 @@ export class ChatInputComponent {
 						displayName: "You",
 						isCurrentUser: true,
 						userIsDeleted: false,
-						messageText: this.newMessage.value!,
+						messageText: this.newMessage.value!.length > this.limit 
+						    ? this.newMessage.value!.substring(0,this.limit) 
+						    : this.newMessage.value!,
 						savedAt: currentIsoTime,
 						sentAt: currentIsoTime,
 						messageId
