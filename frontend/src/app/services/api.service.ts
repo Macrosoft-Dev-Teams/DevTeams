@@ -1,7 +1,13 @@
 import { Injectable } from '@angular/core';
 import { Observable, map } from 'rxjs';
 import { HttpService } from './http.service';
-import { WithMessageId, WithTeamId, Message, Chat } from '../interfaces';
+import {
+	WithMessageId,
+	WithTeamId,
+	Message,
+	Chat,
+	WithTeamInviteId,
+} from '../interfaces';
 
 @Injectable({
 	providedIn: 'root',
@@ -27,9 +33,17 @@ export class ApiService {
 
 	listMessages(chatId: number): Observable<Message[]> {
 		return this.httpService.get<Message[]>(`chats/${chatId}/messages`);
-	}	
+	}
 
 	listChats(): Observable<Chat[]> {
 		return this.httpService.get<Chat[]>(`chats/`);
-	}	
+	}
+
+	inviteTeamMember(userEmail: string, teamId: number): Observable<number> {
+		return this.httpService
+			.post<WithTeamInviteId>(`teams/${teamId}/members`, {
+				userEmail,
+			})
+			.pipe(map((response) => response.teamInviteId));
+	}
 }

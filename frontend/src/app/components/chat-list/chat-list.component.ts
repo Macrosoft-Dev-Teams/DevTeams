@@ -21,7 +21,7 @@ export class ChatListComponent {
 		this.apiService.listChats().subscribe({
 			next: (chats) => this.chats.next(chats),
 			error: (error) => {
-				this.toastr.error('Error!', error);
+				this.toastr.error(error, 'Error!');
 			},
 		});
 

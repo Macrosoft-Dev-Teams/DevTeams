@@ -1,1 +1,14 @@
 <h1>{{ chat.chatName }}</h1>
+@if (newMemberEmail) {
+	<article>
+		<input
+			type="text"
+			[formControl]="newMemberEmail"
+			(keydown.enter)="onSubmitNewMemberInvite()"
+			maxlength="254"
+		/>
+		<button type="button" (click)="toggleNewMemberEmailInput()">Cancel</button>
+	</article>
+} @else {
+	<button type="button" (click)="toggleNewMemberEmailInput()">Invite</button>
+}
