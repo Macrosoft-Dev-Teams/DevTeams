@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ApiService } from '../../services/api.service';
 import { Message } from '@src/app/interfaces';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
 	selector: 'app-chat-input',
@@ -14,11 +15,11 @@ export class ChatInputComponent {
 	newMessage = new FormControl('');
 	limit = 2000;
 
-	constructor(private apiService: ApiService) {}
+	constructor(private apiService: ApiService, private toastr: ToastrService) {}
 
 	onKeyboardEnterKey() {
 		if (this.newMessage.value?.trim().length === 0) {
-			alert('Please provide a message to send.');
+			this.toastr.warning('No message!', 'Please provide a message to send.');
 		} else {
 			this.apiService.sendMessage(this.newMessage.value!, this.chatId).subscribe({
 				next: (messageId) => {
@@ -38,7 +39,7 @@ export class ChatInputComponent {
 					this.newMessage.setValue('');
 				},
 				error: (error) => {
-					alert(error);
+					this.toastr.error('Error!', error);
 				},
 			});
 		}

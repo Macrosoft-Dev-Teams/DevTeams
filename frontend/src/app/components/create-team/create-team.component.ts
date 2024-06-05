@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ApiService } from '../../services/api.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-create-team',
@@ -13,7 +14,7 @@ export class CreateTeamComponent {
   limit = 128;
   teamForm: FormGroup;
 
-  constructor(private fb: FormBuilder, private apiService: ApiService) {
+  constructor(private fb: FormBuilder, private apiService: ApiService, private toastr: ToastrService) {
     this.teamForm = this.fb.group({
       name: ['', Validators.required]
     });
@@ -21,8 +22,7 @@ export class CreateTeamComponent {
 
   onTeamSubmit() {
     if (this.teamForm.value.name?.trim().length === 0) {
-       // TODO: implement alert component
-			alert('Please provide a name for your team.');
+      this.toastr.warning('No team name!', 'Please provide a name for your team.');
 		} else {
 			this.apiService.createTeam(
         this.teamForm.value.name!.length > this.limit 
@@ -31,7 +31,7 @@ export class CreateTeamComponent {
       ).subscribe({
 				next: (teamId) => this.onTeamCreated.emit(teamId),
 				error: (error) => {
-					alert(error);
+					this.toastr.error('Error!', error);
 				},
 			});
 		}
