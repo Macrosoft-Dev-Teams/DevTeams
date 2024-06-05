@@ -1,0 +1,35 @@
+{
+  "extends": [
+    "plugin:prettier/recommended",
+    "eslint:recommended"
+  ],
+  "parserOptions": {
+    "ecmaVersion": 2021,
+    "sourceType": "module"
+  },
+  "env": {
+    "browser": true,
+    "node": true,
+    "es6": true
+  },
+  "rules": {
+    "prettier/prettier": "warn",
+    "indent": ["warn", "tab"],
+    "quotes": ["warn", "single"],
+    "semi": ["warn", "always"],
+    "comma-dangle": ["warn", "always-multiline"],
+    "no-console": "warn",
+    "no-unused-vars": "warn",
+    "no-var": "warn",
+    "prefer-const": "warn",
+    "prefer-template": "warn",
+    "arrow-spacing": "warn",
+    "arrow-parens": ["warn", "always"],
+    "object-curly-spacing": ["warn", "always"],
+    "space-before-function-paren": ["warn", {
+      "anonymous": "always",
+      "named": "never",
+      "asyncArrow": "always"
+    }]
+  }
+}

@@ -1,0 +1,43 @@
+.container {
+  display: flex;
+  height: 100vh;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.logo-container {
+  gap: 0.5rem;
+  display: flex;
+  width: 100%;
+  padding: 2rem;
+}
+
+.login-container {
+  gap: 0.5rem;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+}
+
+.logo {
+  width: 3rem;
+  height: auto;
+}
+
+.login-container button {
+  width: 100%;
+  padding: 0.8rem 2rem;
+  background-color: var(--blue-color);
+  color: var(--button-text-color);
+  border: none;
+  border-radius: 1rem;
+  cursor: pointer;
+}
+
+.login-container button:hover {
+  background-color: var(--darker-blue-color);
+}

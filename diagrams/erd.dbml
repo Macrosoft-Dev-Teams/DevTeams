@@ -1,0 +1,74 @@
+// Assume all columns are NON NULLABLE unless explicitly specified otherwise.
+
+Table Users {
+    UserId INT [PK, INCREMENT]
+    Email VARCHAR[256] NOT NULL,
+    DisplayName NVARCHAR[128]
+    DeletedAt DATETIME [NULL]
+    DeletedBy INT [ref: > Users.UserId, NULL]
+}
+
+Table AdminUsers {
+    AdminUserId INT [PK, INCREMENT]
+    UserId INT [ref: > Users.UserId]
+    DeletedAt DATETIME [NULL]
+    DeletedBy INT [ref: > Users.UserId, NULL]
+}
+
+Table Chats {
+    ChatId INT [PK, INCREMENT]
+    ChatName NVARCHAR[128]
+}
+
+Table UserChats {
+    UserChatId INT [PK, INCREMENT]
+    UserId INT [ref: > Users.UserId]
+    ChatId INT [ref: > Chats.ChatId]
+}
+
+Table Teams {
+    TeamId INT [PK, INCREMENT]
+    TeamName NVARCHAR[128]
+    DeletedAt DATETIME [NULL]
+    DeletedBy INT [ref: > Users.UserId, NULL]
+}
+
+Table TeamChats {
+    TeamChatId INT [PK, INCREMENT]
+    TeamId INT [ref: > Teams.TeamId]
+    ChatId INT [ref: > Chats.ChatId]
+}
+
+Table TeamMembershipTypes {
+    TeamMembershipTypeId INT [PK, INCREMENT]
+    Description VARCHAR[32]
+}
+
+Table TeamMemberships {
+    TeamMembershipId INT [PK, INCREMENT]
+    UserId INT [ref: > Users.UserId]
+    TeamId INT [ref: > Teams.TeamId]
+    MembershipTypeId INT [ref: > TeamMembershipTypes.TeamMembershipTypeId]
+    DeletedAt DATETIME [NULL]
+    DeletedBy INT [ref: > Users.UserId, NULL]    
+}
+
+Table Messages {
+    MessageId INT [PK, INCREMENT]
+    ChatId INT [ref: > Chats.ChatId]
+    SentBy INT [ref: > Users.UserId]    
+    SentAt DATETIME
+    SavedAt DATETIME [NULL]
+}
+
+Table TextMessages {
+    TextMessageId INT [PK, INCREMENT]
+    MessageId INT [ref: - Messages.MessageId]
+    MessageText Text
+}
+
+Table FileShareMessages {
+    FileShareMessageId INT [PK, INCREMENT]
+    MessageId INT [ref: - Messages.MessageId]
+    Filepath VARCHAR[512]
+}
