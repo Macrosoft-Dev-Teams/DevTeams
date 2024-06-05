@@ -114,8 +114,37 @@ const getSearch = async (userId, searchStr) => {
 	return [users, teams];
 };
 
+const isChatMember = async (userId, chatId) => {
+	const q = `
+		SELECT CASE WHEN EXISTS(
+			SELECT 1 FROM (
+				SELECT ChatId FROM TeamChats as tc
+				INNER JOIN (
+					SELECT UserId, TeamId 
+					FROM TeamMemberships
+					WHERE UserId = @UserId
+				) AS tm ON tm.TeamId = tc.TeamId
+				UNION
+				SELECT ChatId 
+				FROM UserChats as uc
+				WHERE UserId = @UserId
+			) AS cids
+			WHERE cids.ChatId = @ChatId
+		) THEN 1 ELSE 0 END AS [Exists]
+	`;
+
+	const request = await db();
+	const ret = await request
+		.input('UserId', userId)
+		.input('ChatId', chatId)
+		.query(q);
+
+	return ret.recordset[0].Exists === 1;
+};
+
 module.exports = {
 	createChat,
 	getChats,
 	getSearch,
+	isChatMember,
 };
