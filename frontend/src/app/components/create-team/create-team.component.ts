@@ -9,7 +9,7 @@ import { ApiService } from '../../services/api.service';
 })
 export class CreateTeamComponent {
   @Output() onCreateTeamCancelled = new EventEmitter();
-  @Output() onTeamCreated = new EventEmitter();
+  @Output() onTeamCreated = new EventEmitter<number>();
   limit = 128;
   teamForm: FormGroup;
 
@@ -29,7 +29,7 @@ export class CreateTeamComponent {
           ? this.teamForm.value.name!.substring(0,this.limit) 
           : this.teamForm.value.name!
       ).subscribe({
-				next: () => this.onTeamCreated.emit(),
+				next: (teamId) => this.onTeamCreated.emit(teamId),
 				error: (error) => {
 					alert(error);
 				},

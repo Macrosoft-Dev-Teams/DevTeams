@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Chat } from '@src/app/interfaces';
 import { ApiService } from '@src/app/services/api.service';
-import { BehaviorSubject, Observable, map } from 'rxjs';
+import { BehaviorSubject, Observable, map, switchMap } from 'rxjs';
 
 @Component({
 	selector: 'app-chat-list',
@@ -10,6 +10,7 @@ import { BehaviorSubject, Observable, map } from 'rxjs';
 })
 export class ChatListComponent {
 	@Input() searchText?: Observable<string>;
+	@Input() newTeamIds?: Observable<number>;
 	@Output() onOpenChat = new EventEmitter<Chat>();
 	chats = new BehaviorSubject<Chat[]>([]);
 
@@ -26,6 +27,19 @@ export class ChatListComponent {
 		this.searchText?.subscribe({
 			next: (text) => console.log(text),
 		});
+
+		this.newTeamIds
+			?.pipe(
+				switchMap(() => {
+					return this.apiService.listChats();
+				}),
+			)
+			.subscribe({
+				next: (chats) => this.chats.next(chats),
+				error: (error) => {
+					alert(error);
+				},
+			});
 	}
 
 	onChatSelected(chat: Chat) {

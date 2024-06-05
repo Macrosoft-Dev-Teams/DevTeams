@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Chat } from '@src/app/interfaces';
 import { BehaviorSubject, Observable } from 'rxjs';
 
@@ -8,6 +8,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
   styleUrl: './chats-controller.component.css'
 })
 export class ChatsControllerComponent {
+  @Input() newTeamIds?: Observable<number>;
   @Output() onCreateNewTeam = new EventEmitter();
   @Output() onOpenChat = new EventEmitter<Chat>();
   private searchText = new BehaviorSubject('');

@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { Chat } from '@src/app/interfaces';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 @Component({
 	selector: 'app-home',
@@ -7,8 +8,13 @@ import { Chat } from '@src/app/interfaces';
 	styleUrl: './home.component.css',
 })
 export class HomeComponent {
+	newTeamIds = new BehaviorSubject(-1);
 	creatingNewTeam = false;
 	currentChat?: Chat;
+
+	get newTeamIdsObservable(): Observable<number> {
+		return this.newTeamIds;
+	}
 
 	onCreateNewTeam() {
 		this.creatingNewTeam = true;
@@ -18,7 +24,8 @@ export class HomeComponent {
 		this.creatingNewTeam = false;
 	}
 
-	onTeamCreated() {
+	onTeamCreated(teamId: any) {
+		this.newTeamIds.next(teamId);
 		this.creatingNewTeam = false;
 	}
 
