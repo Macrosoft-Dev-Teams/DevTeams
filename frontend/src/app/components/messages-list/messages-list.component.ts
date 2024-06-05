@@ -2,6 +2,7 @@ import { Component, Input } from '@angular/core';
 import { Message } from '@src/app/interfaces';
 import { ApiService } from '@src/app/services/api.service';
 import { BehaviorSubject, map } from 'rxjs';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
 	selector: 'app-messages-list',
@@ -12,7 +13,7 @@ export class MessagesListComponent {
 	@Input() chatId = -1;
 	messages = new BehaviorSubject<Message[]>([]);
 
-	constructor(private apiService: ApiService) {}
+	constructor(private apiService: ApiService, private toastr: ToastrService) {}
 
 	ngOnInit() {
 		this.apiService
@@ -30,7 +31,7 @@ export class MessagesListComponent {
 			.subscribe({
 				next: (messages) => this.messages.next(messages),
 				error: (error) => {
-					alert(error);
+					this.toastr.error('Error!', error);
 				},
 			});
 	}
