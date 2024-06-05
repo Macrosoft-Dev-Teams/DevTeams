@@ -10,7 +10,7 @@ import { ApiService } from '../../services/api.service';
 export class CreateTeamComponent {
   @Output() onCreateTeamCancelled = new EventEmitter();
   @Output() onTeamCreated = new EventEmitter();
-
+  limit = 128;
   teamForm: FormGroup;
 
   constructor(private fb: FormBuilder, private apiService: ApiService) {
@@ -21,9 +21,14 @@ export class CreateTeamComponent {
 
   onTeamSubmit() {
     if (this.teamForm.value.name?.trim().length === 0) {
+       // TODO: implement alert component
 			alert('Please provide a name for your team.');
 		} else {
-			this.apiService.createTeam(this.teamForm.value.name!).subscribe({
+			this.apiService.createTeam(
+        this.teamForm.value.name!.length > this.limit 
+          ? this.teamForm.value.name!.substring(0,this.limit) 
+          : this.teamForm.value.name!
+      ).subscribe({
 				next: () => this.onTeamCreated.emit(),
 				error: (error) => {
 					alert(error);
