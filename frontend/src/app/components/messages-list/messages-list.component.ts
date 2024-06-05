@@ -35,7 +35,7 @@ export class MessagesListComponent {
 		).subscribe({
 			next: (messages) => this.messages.next(messages),
 			error: (error) => {
-				this.toastr.error('Error!', error);
+				this.toastr.error(error, 'Error!');
 			},
 		});
 	}

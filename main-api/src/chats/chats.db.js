@@ -36,7 +36,7 @@ const createChat = async (tx, creatorUserId, otherUserId) => {
 
 const getChats = async (userId) => {
 	const q = `
-	SELECT cht.ChatId as chatId, cht.CreatedAt as createdAt, cht.ChatName AS chatName, msg.SavedAt AS lastMessageAt, msg.MessageText as messageText
+	SELECT cht.ChatId as chatId, TeamChats.TeamId as teamId, cht.CreatedAt as createdAt, cht.ChatName AS chatName, msg.SavedAt AS lastMessageAt, msg.MessageText as messageText
 	FROM Chats as cht
 	INNER JOIN (
 		SELECT ChatId FROM TeamChats as tc
@@ -60,6 +60,7 @@ const getChats = async (userId) => {
 		LEFT JOIN TextMessages AS tm ON msgg.MessageId = tm.MessageId
 		WHERE msgg.rn = 1
 	) AS msg ON msg.ChatId = cht.ChatId
+	LEFT JOIN TeamChats ON TeamChats.ChatId=cht.ChatId
 	ORDER BY COALESCE(msg.SavedAt, cht.CreatedAt) DESC;
 	`;
 

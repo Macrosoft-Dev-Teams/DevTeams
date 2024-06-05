@@ -19,7 +19,7 @@ export class ChatInputComponent {
 
 	onKeyboardEnterKey() {
 		if (this.newMessage.value?.trim().length === 0) {
-			this.toastr.warning('No message!', 'Please provide a message to send.');
+			this.toastr.warning('Please provide a message to send.', 'No message!');
 		} else {
 			this.apiService.sendMessage(this.newMessage.value!, this.chatId).subscribe({
 				next: (messageId) => {
@@ -39,7 +39,7 @@ export class ChatInputComponent {
 					this.newMessage.setValue('');
 				},
 				error: (error) => {
-					this.toastr.error('Error!', error);
+					this.toastr.error(error, 'Error!');
 				},
 			});
 		}

@@ -11,6 +11,10 @@ export interface WithTeamId {
   teamId: number,
 }
 
+export interface WithTeamInviteId {
+  teamInviteId: number,
+}
+
 export interface Message {
 	displayName: string,
 	isCurrentUser: boolean,
@@ -24,6 +28,7 @@ export interface Message {
 
 export interface Chat {
 	chatId: number;
+	teamId: number,
 	chatName: string;
 	messageText?: string;
 	lastMessageAt?: string;
