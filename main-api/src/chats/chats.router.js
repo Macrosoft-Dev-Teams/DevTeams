@@ -1,6 +1,6 @@
 const { Router } = require('express');
 const { withTransaction } = require('../db');
-const { createChat, getChats, getSearch } = require('./chats.db');
+const { createChat, getChats, getSearch, isChatMember } = require('./chats.db');
 const {
 	createTextMessage,
 	createFileShareMessage,
@@ -40,23 +40,31 @@ chatsRouter.post('/:chatId/messages/text', (req, res) => {
 
 chatsRouter.post('/:chatId/messages/file', (req, res) => {
 	return withTransaction(async (tx) => {
-		const messageId = await createFileShareMessage(
-			tx,
-			res.locals.userId,
-			parseInt(req.params.chatId),
-			new Date(),
-			req.body.filePath,
-		);
-		res.status(201).json({ messageId });
+		if (await isChatMember(res.locals.userId, parseInt(req.params.chatId))) {
+			const messageId = await createFileShareMessage(
+				tx,
+				res.locals.userId,
+				parseInt(req.params.chatId),
+				new Date(),
+				req.body.filePath,
+			);
+			res.status(201).json({ messageId });
+		} else {
+			res.status(403).json({ message: 'Cannot perform this operation.' });
+		}
 	});
 });
 
 chatsRouter.get('/:chatId/messages', async (req, res) => {
-	const messages = await getMessages(
-		res.locals.userId,
-		parseInt(req.params.chatId),
-	);
-	res.status(200).json(messages);
+	if (await isChatMember(res.locals.userId, parseInt(req.params.chatId))) {
+		const messages = await getMessages(
+			res.locals.userId,
+			parseInt(req.params.chatId),
+		);
+		res.status(200).json(messages);
+	} else {
+		res.status(403).json({ message: 'Cannot perform this operation.' });
+	}
 });
 
 chatsRouter.get('/', async (req, res) => {

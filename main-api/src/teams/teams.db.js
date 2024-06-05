@@ -99,7 +99,7 @@ const addTeamInvite = async (tx, userId, teamId) => {
 		.input('TeamId', teamId)
 		.query(q);
 	return ret.recordset[0].TeamInviteId;
-}
+};
 
 const addTeamMember = async (tx, userId, teamId) => {
 	const teamAdminMembershipTypeId = await getTeamMembershipTypeId(
