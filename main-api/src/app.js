@@ -27,7 +27,7 @@ app.use('/chats', chatsRouter);
 app.use('/users', usersRouter);
 
 app.get('/', (req, res) => {
-	res.status(200).send(JSON.stringify('Server status: OK'));
+	res.status(200).send('Server status: OK');
 });
 
 app.listen(PORT, () => {
