@@ -22,7 +22,7 @@ export class CreateTeamComponent {
 
   onTeamSubmit() {
     if (this.teamForm.value.name?.trim().length === 0) {
-      this.toastr.warning('No team name!', 'Please provide a name for your team.');
+      this.toastr.warning('Please provide a name for your team.', 'No team name!');
 		} else {
 			this.apiService.createTeam(
         this.teamForm.value.name!.length > this.limit 
@@ -31,7 +31,7 @@ export class CreateTeamComponent {
       ).subscribe({
 				next: (teamId) => this.onTeamCreated.emit(teamId),
 				error: (error) => {
-					this.toastr.error('Error!', error);
+					this.toastr.error(error, 'Error!');
 				},
 			});
 		}
