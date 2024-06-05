@@ -1,13 +1,22 @@
-<app-chats-controller [newTeamIds]="newTeamIdsObservable" (onOpenChat)="onChatSelected($event)" (onCreateNewTeam)="onCreateNewTeam()" />
-@if(creatingNewTeam) {
+<app-chats-controller
+	[newTeamIds]="newTeamIdsObservable"
+	(onOpenChat)="onChatSelected($event)"
+	(onCreateNewTeam)="onCreateNewTeam()"
+/>
+@if (creatingNewTeam) {
 	<app-create-team
 		(onCreateTeamCancelled)="onCreateTeamCancelled()"
 		(onTeamCreated)="onTeamCreated($event)"
-	/>
+/>
 } @else {
-  @if (currentChat) {
-    <app-main-chat-details-view [chat]="currentChat" />
-  } @else {
-    <p>Select a chat from the left pane to start chatting. Or search for a specific user email.</p>
-  }
+	@if (currentChat) {
+		<app-main-chat-details-view [chat]="currentChat" />
+	} @else {
+		<p>
+			Select a chat from the left pane to start chatting. Or search for a
+			specific user email.
+		</p>
+	}
 }
+
+<button class="btn" (click)="signOut()">Sign Out</button>

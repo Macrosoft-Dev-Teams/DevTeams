@@ -1,34 +1,4 @@
-.container {
-  display: flex;
-  height: 100vh;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-
-.logo-container {
-  gap: 0.5rem;
-  display: flex;
-  width: 100%;
-  padding: 2rem;
-}
-
-.login-container {
-  gap: 0.5rem;
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding: 2rem;
-}
-
-.logo {
-  width: 3rem;
-  height: auto;
-}
-
-.login-container button {
+.btn {
   width: 100%;
   padding: 0.8rem 2rem;
   background-color: var(--blue-color);
@@ -38,6 +8,6 @@
   cursor: pointer;
 }
 
-.login-container button:hover {
+.btn:hover {
   background-color: var(--darker-blue-color);
 }

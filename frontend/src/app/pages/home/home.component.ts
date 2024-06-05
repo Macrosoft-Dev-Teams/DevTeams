@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 import { Chat } from '@src/app/interfaces';
+import { AuthService } from '@src/app/services/auth.service';
 import { BehaviorSubject, Observable } from 'rxjs';
 
 @Component({
@@ -11,6 +13,8 @@ export class HomeComponent {
 	newTeamIds = new BehaviorSubject(-1);
 	creatingNewTeam = false;
 	currentChat?: Chat;
+
+	constructor(private router: Router, private authService: AuthService) {}
 
 	get newTeamIdsObservable(): Observable<number> {
 		return this.newTeamIds;
@@ -32,5 +36,10 @@ export class HomeComponent {
 	onChatSelected(chat: any) {
 		this.creatingNewTeam = false;
 		this.currentChat = chat;    
+	}
+
+	signOut() {
+		this.authService.signOut();
+		this.router.navigate(['/'])
 	}
 }
