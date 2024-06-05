@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { Message } from '@src/app/interfaces';
 import { ApiService } from '@src/app/services/api.service';
-import { BehaviorSubject, map } from 'rxjs';
+import { BehaviorSubject, Subscription, map, switchMap, timer } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
@@ -12,31 +12,39 @@ import { ToastrService } from 'ngx-toastr';
 export class MessagesListComponent {
 	@Input() chatId = -1;
 	messages = new BehaviorSubject<Message[]>([]);
+	subscription !: Subscription;
 
 	constructor(private apiService: ApiService, private toastr: ToastrService) {}
 
 	ngOnInit() {
-		this.apiService
-			.listMessages(this.chatId)
-			.pipe(
-				map((messages) =>
-					messages.map<Message>((message) => {
-						return {
-							...message,
-							displayName: message.isCurrentUser ? 'You' : message.displayName,
-						};
-					}),
-				),
+		this.subscription = timer(0,2000).pipe(
+			switchMap(() => 
+				this.apiService
+					.listMessages(this.chatId)
+					.pipe(
+						map((messages) =>
+							messages.map<Message>((message) => {
+								return {
+									...message,
+									displayName: message.isCurrentUser ? 'You' : message.displayName,
+								};
+							}),
+						),
+					)
 			)
-			.subscribe({
-				next: (messages) => this.messages.next(messages),
-				error: (error) => {
-					this.toastr.error('Error!', error);
-				},
-			});
+		).subscribe({
+			next: (messages) => this.messages.next(messages),
+			error: (error) => {
+				this.toastr.error('Error!', error);
+			},
+		});
 	}
 
 	onMessageSent(message: Message) {
 		this.messages.next([...this.messages.value, message]);
+	}
+
+	ngOnDestroy() {
+		this.subscription.unsubscribe();
 	}
 }
