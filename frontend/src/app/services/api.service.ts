@@ -8,6 +8,7 @@ import {
 	Chat,
 	WithTeamInviteId,
 	withUserId,
+	TeamInvite,
 	User,
 } from '../interfaces';
 
@@ -53,6 +54,17 @@ export class ApiService {
 		return this.httpService
 			.post<withUserId>('users/', {})
 			.pipe(map((response) => response.userId));
+	}
+
+	getTeamInvite(inviteId: number): Observable<TeamInvite> {
+		return this.httpService
+			.get<TeamInvite>(`teams/invites/${inviteId}`);
+	}
+
+	updateInvite(inviteId: number, accepted: boolean): Observable<any> {
+		return this.httpService.patch(`teams/invites/${inviteId}`, {
+			accepted
+		});
 	}
 
 	searchUserByEmail(userEmail: string): Observable<User> {
