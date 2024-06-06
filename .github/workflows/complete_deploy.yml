@@ -66,5 +66,4 @@ jobs:
 
       - name: Deploy new ElasticBeanstalk Application Version
         run: |
-          aws elasticbeanstalk wait environment-exists update-environment --environment-name ${{ secrets.AWS_MAIN_APP_ENV }} --version-label ${{ github.sha }}
-            
+          aws elasticbeanstalk update-environment --environment-name ${{ secrets.AWS_MAIN_APP_ENV }} --version-label ${{ github.sha }}
