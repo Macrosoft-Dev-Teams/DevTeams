@@ -29,7 +29,7 @@ usersRouter.get('/search/:userEmail', async (req, res) => {
 		req.params.userEmail,
 	);
 	if (response == undefined) {
-		res.status(400).json({ Response: 'User does not exist' });
+		res.status(200).json({ userId: -1 });
 	} else if (!response.ok) {
 		res.status(500).json(response.error);
 	} else {

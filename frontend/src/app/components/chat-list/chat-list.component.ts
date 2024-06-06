@@ -60,13 +60,17 @@ export class ChatListComponent {
 				})
 				if (this.searchString) {
 					this.apiService.searchUserByEmail(text).subscribe({
-						next: (user) => this.searchUser = user,
-						error: (error: HttpErrorResponse) => {
-							if (error.status == 400) {
-								this.searchUser = {} as User;
+						next: (user) => {
+							console.log(user);
+							if (user.userId && user.userId >= 0) {
+								this.searchUser = user;
 							}	else {
-								this.toastr.error(error.message, 'Error!');
-							}		
+								this.searchUser = {} as User;
+							}
+						},
+						error: (error) => {
+							this.searchUser = {} as User;
+							this.toastr.error(error, 'Error!');	
 						},
 					})
 				}	
