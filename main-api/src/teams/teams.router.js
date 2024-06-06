@@ -6,6 +6,9 @@ const {
 	deleteTeam,
 	isTeamAdmin,
 	addTeamInvite,
+	getActiveTeamInvite,
+	insertRegularTeamMembership,
+	deleteTeamInvite,
 } = require('./teams.db');
 const { getUserIdByEmail } = require('../users/users.db');
 const { safeCreateChat } = require('../chats/chats.db');
@@ -87,6 +90,41 @@ teamsRouter.post('/:teamId/members', (req, res) => {
 			}
 		} else {
 			res.status(403).json({ message: 'Cannot perform this operation.' });
+		}
+	});
+});
+
+teamsRouter.get('/invites/:inviteId', async (req, res) => {
+	const ret = await getActiveTeamInvite(undefined, req.params.inviteId);
+	if (ret?.userId === res.locals.userId) {
+		res.status(200).json(ret);
+	} else {
+		res
+			.status(400)
+			.json({ message: 'Could not find this invite. It must have expired.' });
+	}
+});
+
+teamsRouter.patch('/invites/:inviteId', async (req, res) => {
+	return withTransaction(async (tx) => {
+		const invite = await getActiveTeamInvite(tx, req.params.inviteId);
+		if (invite?.userId === res.locals.userId) {
+			if (req.body.accepted) {
+				const teamMembershipId = await insertRegularTeamMembership(
+					tx,
+					res.locals.userId,
+					invite.teamId,
+				);
+
+				res.status(201).json({ teamMembershipId });
+			} else {
+				await deleteTeamInvite(tx, req.params.inviteId, res.locals.userId);
+				res.status(200).send();
+			}
+		} else {
+			res
+				.status(400)
+				.json({ message: 'Could not find this invite. It must have expired.' });
 		}
 	});
 });
