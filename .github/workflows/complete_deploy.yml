@@ -41,19 +41,15 @@ jobs:
           role-session-name: GitHub_to_AWS_via_FederatedOIDC
           aws-region: ${{ secrets.AWS_REGION }}
 
-      - name: Create ZIP deployment package
-        run: |
-           cd frontend
-           mv dist/ ../
-
       - name: Set working directory to main-api
-        run: cp -r dist/ ./main-api   
+        run: mv frontend/dist main-api/dist  
 
-      - name: Set working directory to main-api
-        run: cd main-api
+      # - name: Set working directory to main-api
+      #   run: cd main-api
 
       - name: Create ZIP deployment package
         run: |
+          cd main-api
           zip -r ../main-api-app.zip ./src/* ./dist/* package.json package-lock.json
           ls
 
