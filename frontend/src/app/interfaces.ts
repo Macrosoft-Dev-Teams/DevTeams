@@ -37,3 +37,8 @@ export interface Chat {
 	messageText?: string;
 	lastMessageAt?: string;
 }
+
+export interface User {
+	userId?: number,
+	displayName?: string,
+}

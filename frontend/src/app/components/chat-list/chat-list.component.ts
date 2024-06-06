@@ -1,8 +1,9 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { Chat } from '@src/app/interfaces';
+import { Chat, User } from '@src/app/interfaces';
 import { ApiService } from '@src/app/services/api.service';
-import { BehaviorSubject, Observable, Subscription, map, switchMap, timer } from 'rxjs';
+import { BehaviorSubject, Observable, Subscription, filter, map, switchMap, timer } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
 	selector: 'app-chat-list',
@@ -14,13 +15,23 @@ export class ChatListComponent {
 	@Input() newTeamIds?: Observable<number>;
 	@Output() onOpenChat = new EventEmitter<Chat>();
 	chats = new BehaviorSubject<Chat[]>([]);
+	searchUser =  {} as User;
 	subscription !: Subscription;
+	searchString: string = '';
 
 	constructor(private apiService: ApiService, private toastr: ToastrService) {}
 
 	ngOnInit() {
-		this.subscription = timer(0,2000).pipe(
-			switchMap(() => this.apiService.listChats())
+		this.subscription = timer(0,1000).pipe(
+			switchMap(() => this.apiService.listChats()),
+			map((chats) => { 
+				if (this.searchString && /\S/.test(this.searchString)) { 
+					return chats.filter(chat => chat.chatName.toLowerCase().includes(this.searchString))
+				}
+				else {
+					return chats
+				}
+			})
 		).subscribe({
 			next: (chats) => this.chats.next(chats),
 			error: (error) => {
@@ -29,7 +40,22 @@ export class ChatListComponent {
 		});
 
 		this.searchText?.subscribe({
-			next: (text) => console.log(text),
+			next: (text) => {
+				this.searchString = text;
+				if (this.searchString) {
+					this.apiService.searchUserByEmail(text).subscribe({
+						next: (user) => this.searchUser = user,
+						error: (error: HttpErrorResponse) => {
+							if (error.status == 400) {
+								this.searchUser = {} as User;
+							}	else {
+								this.toastr.error(error.message, 'Error!');
+							}		
+						},
+					})
+				}	
+				console.log(this.searchUser);
+			},
 		});
 
 		this.newTeamIds

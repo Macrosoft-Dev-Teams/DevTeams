@@ -8,6 +8,7 @@ import {
 	Chat,
 	WithTeamInviteId,
 	withUserId,
+	User,
 } from '../interfaces';
 
 @Injectable({
@@ -52,5 +53,9 @@ export class ApiService {
 		return this.httpService
 			.post<withUserId>('users/', {})
 			.pipe(map((response) => response.userId));
+	}
+
+	searchUserByEmail(userEmail: string): Observable<User> {
+		return this.httpService.get<User>(`users/search/${userEmail}`);
 	}
 }
