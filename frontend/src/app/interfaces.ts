@@ -15,6 +15,10 @@ export interface WithTeamInviteId {
   teamInviteId: number,
 }
 
+export interface withUserId {
+	userId: number,
+}
+
 export interface Message {
 	displayName: string,
 	isCurrentUser: boolean,

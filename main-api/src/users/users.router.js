@@ -17,7 +17,7 @@ usersRouter.get('/', async (req, res) => {
 
 usersRouter.post('/', async (req, res) => {
 	const email = res.locals.email;
-	const name = res.locals.name;
+	const name = res.locals.displayName;
 
 	const userId = await safeAddUser(email, name);
 	res.status(201).json({ userId });
