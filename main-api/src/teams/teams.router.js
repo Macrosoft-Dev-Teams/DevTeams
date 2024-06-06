@@ -8,6 +8,8 @@ const {
 	addTeamInvite,
 } = require('./teams.db');
 const { getUserIdByEmail } = require('../users/users.db');
+const { safeCreateChat } = require('../chats/chats.db');
+const { createTextMessage } = require('../chats/messages.db');
 
 const teamsRouter = Router();
 const teamNameLimit = 128;
@@ -64,6 +66,18 @@ teamsRouter.post('/:teamId/members', (req, res) => {
 					tx,
 					teamMemberId,
 					req.params.teamId,
+				);
+				const chatId = await safeCreateChat(
+					tx,
+					res.locals.userId,
+					teamMemberId,
+				);
+				await createTextMessage(
+					tx,
+					res.locals.userId,
+					parseInt(chatId),
+					new Date(),
+					`You have received a new team invite! Join at ${process.env.HOME_PAGE_LINK}?teaminvite=${teamInviteId}`,
 				);
 				res.status(201).json({ teamInviteId });
 			} else {
