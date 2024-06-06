@@ -2,7 +2,7 @@
 	--bg-color: #fff;
 }
 
-.container {
+:host {
 	display: flex;
 	gap: 0.5rem;
 	align-items: center;
@@ -10,7 +10,7 @@
 	background-color: var(--bg-color);
 }
 
-.container:hover {
+:host:hover {
   --bg-color: var(--light-gray);
 }
 
@@ -18,8 +18,8 @@
 	--bg-color: var(--light-gray);
 }
 
-section p,
-h4 {
+section, p, h4 {
+	font-size: 1.3rem;
 	background-color: var(--bg-color);
 }
 

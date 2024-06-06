@@ -1,20 +1,59 @@
 :host {
-  display: flex;
-  flex-direction: column;
-  padding: 1rem;
+	display: flex;
+	flex: 1;
+	flex-direction: column;
+	padding: 1rem;
+	height: 100vh;
+	font-size: 1.2em;
+}
+
+.enter-msg {
+	display: flex;
+	bottom: 0;
+	width: 100%;
+	margin: 0 auto;
+}
+
+.enter-msg app-chat-input {
+	width: 100%;
+}
+
+.messages {
+	display: flex;
+	gap: 1rem;
+	flex-direction: column;
+	flex: 1;
 }
 
 ul {
-  list-style-type: none;
+	list-style-type: none;
+}
+
+ul li p {
+	padding: 0.5rem 1rem;
+	border-radius: 1rem;
+}
+
+.msg-sender p,
+.msg-sender footer,
+.msg-sender em {
+	display: flex;
+	justify-content: flex-end;
 }
 
 .msg-sender p {
-  background-color: black;
-  color: wheat;
+	background-color: var(--dark-color);
+	color: var(--light-color);
 }
 
-/* TODO: update to use global colours */
+.msg-receiver p,
+.msg-receiver footer,
+.msg-receiver em {
+	display: flex;
+	justify-content: flex-start;
+}
+
 .msg-receiver p {
-  background-color: wheat;
-  color: black;
+	background-color: var(--light-color);
+	color: var(--dark-color);
 }

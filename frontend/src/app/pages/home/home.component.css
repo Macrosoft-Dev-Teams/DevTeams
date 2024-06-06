@@ -4,6 +4,7 @@
   flex-wrap: wrap;
   flex: 1;
   height: 100vh;
+
 }
 
 .main-chat-container {
@@ -11,14 +12,15 @@
   justify-content: center;
   align-items: center;
   padding: 1rem;
-  border: 1px solid red;
   min-width: 70%;
+  font-size: 1rem;
 }
 
 app-chats-controller {
   display: flex;
+  flex: 1;
   flex-direction: column;
-  min-width: 20%;
+  min-width: 30%;
   max-width: 30%;
 }
 

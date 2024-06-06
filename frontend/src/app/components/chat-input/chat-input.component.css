@@ -1,0 +1,13 @@
+input[type=text] {
+  /* Style properties here */
+  font-size: 1.2rem;
+  border: 0.1rem var(--darker-blue-color) solid;
+  border-radius: 0.5rem;
+  width: 100%;
+  padding: 0.5rem 0.2rem;
+}
+
+input[type=text]:active {
+  border-color: var(--light-gray);
+  transition: 0.5s;
+}

@@ -14,10 +14,4 @@ export class ChatListItemComponent {
     const data = this.chat.chatId;
     this.dataEvent.emit(data);
   }
-  
-  @HostBinding('class.selected') isSelected: boolean = false;
-
-  toggleSelection() {
-    this.isSelected = !this.isSelected;
-  }
 }

@@ -1,3 +1,4 @@
+<div class="messages">
 <ul *ngFor="let message of messages | async">
   @if(isInviteMessage(message)) {
     <app-team-invite-message [inviteId]="getTeamInviteId(message.messageText ?? '') ?? -1" [message]="message.messageText ?? ''" />
@@ -9,4 +10,8 @@
     </li>
   }
 </ul>
-<app-chat-input [chatId]="chatId" (onMessageSent)="onMessageSent($event)" />
+</div>
+
+<div class="enter-msg">
+  <app-chat-input [chatId]="chatId" (onMessageSent)="onMessageSent($event)" />
+</div>

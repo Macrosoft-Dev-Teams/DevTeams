@@ -1,8 +1,6 @@
 .logo-container {
   display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  font-size: 1rem;
+  justify-content: center;
   gap: 0.5rem;
   width: 100%;
   padding: 1rem 0rem;
@@ -10,5 +8,10 @@
 
 .logo {
   width: 2rem;
-  height: auto;
+  height: 2rem;
+}
+
+.title {
+  font-weight: 500;
+  font-size: 1.2rem;
 }
