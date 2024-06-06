@@ -14,7 +14,10 @@ export class HomeComponent {
 	creatingNewTeam = false;
 	currentChat?: Chat;
 
-	constructor(private router: Router, private authService: AuthService) {}
+	constructor(
+		private router: Router,
+		private authService: AuthService,
+	) {}
 
 	get newTeamIdsObservable(): Observable<number> {
 		return this.newTeamIds;
@@ -35,11 +38,11 @@ export class HomeComponent {
 
 	onChatSelected(chat: any) {
 		this.creatingNewTeam = false;
-		this.currentChat = chat;    
+		this.currentChat = chat;
 	}
 
 	signOut() {
 		this.authService.signOut();
-		this.router.navigate(['/'])
+		this.router.navigate(['/']);
 	}
 }

@@ -1,4 +1,6 @@
-const safeAddUser = async (transaction, email, name) => {
+const { db } = require('../db');
+
+const safeAddUser = async (email, name) => {
 	const query = `
 		DECLARE @UserId INT
 
@@ -17,7 +19,7 @@ const safeAddUser = async (transaction, email, name) => {
 		SELECT @UserId AS UserId
   `;
 
-	const request = transaction.request();
+	const request = await db();
 
 	const response = await request
 		.input('email', email)
@@ -33,7 +35,7 @@ const getUserIdByEmail = async (transaction, userEmail) => {
     WHERE LOWER(Email)=LOWER(@UserEmail)
   `;
 
-	const request = transaction.request();
+	const request = transaction ? transaction.request() : await db();
 	const response = await request.input('UserEmail', userEmail).query(query);
 	return response.recordset[0]?.UserId;
 };

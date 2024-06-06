@@ -21,14 +21,13 @@ export class AuthService {
 
 			return user !== undefined;
 		} catch (error) {
-			
 			return false;
 		}
 	}
 
 	async handleAuthenticatedUser() {
 		const isLoggedIn = await this.getLogInStatus();
-		
+
 		if (isLoggedIn) {
 			this.router.navigate(['/home']);
 		}
@@ -42,6 +41,18 @@ export class AuthService {
 		let cognitoToken = (await fetchAuthSession()).tokens;
 
 		return cognitoToken?.idToken?.payload['name']?.toString();
+	}
+
+	async getAccessToken(): Promise<string | undefined> {
+		let cognitoToken = (await fetchAuthSession()).tokens;
+
+		return cognitoToken?.accessToken?.payload.toString();
+	}
+
+	async getIdToken(): Promise<string | undefined> {
+		let cognitoToken = (await fetchAuthSession()).tokens;
+
+		return cognitoToken?.idToken?.toString();
 	}
 
 	signOut() {
