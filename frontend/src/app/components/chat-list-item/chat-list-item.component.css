@@ -1,4 +1,39 @@
+:root {
+	--bg-color: #fff;
+}
+
 :host {
-  display: flex;
-  flex-direction: column;
+	display: flex;
+	gap: 0.5rem;
+	align-items: center;
+	width: 100%;
+	background-color: var(--bg-color);
+}
+
+:host:hover {
+  --bg-color: var(--light-gray);
+}
+
+.selected {
+	--bg-color: var(--light-gray);
+}
+
+section, p, h4 {
+	font-size: 1.3rem;
+	background-color: var(--bg-color);
+}
+
+p {
+	color: var(--primary-text-color);
+}
+
+h4 {
+	font-weight: 500;
+}
+
+mat-icon {
+	background-color: var(--bg-color);
+	font-size: 2.5rem;
+	height: 2.5rem;
+	width: 2.5rem;
 }

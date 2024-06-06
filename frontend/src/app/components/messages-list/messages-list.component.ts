@@ -30,7 +30,7 @@ export class MessagesListComponent {
 								return {
 									...message,
 									displayName: message.isCurrentUser
-										? 'You'
+										? 'You' // style receiver msg
 										: message.displayName,
 								};
 							}),

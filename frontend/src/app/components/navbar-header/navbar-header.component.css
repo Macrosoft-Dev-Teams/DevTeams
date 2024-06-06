@@ -1,0 +1,44 @@
+:host {
+  display: flex;
+  font-size: 1.3rem;
+  border-bottom: 0.1rem var(--blue-color) solid;
+}
+
+section {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+button {
+  border: none;
+}
+
+.button {
+display: inline-flex;
+align-items: center;
+font-size: 1rem;
+border: none;
+border-radius: 0.5rem;
+padding: 0.2rem 1rem;
+cursor: pointer;
+color: var(--light-color);
+background-color: var(--blue-color);
+text-decoration: none;
+}
+
+.button:hover {
+background-color: var( --darker-blue-color);
+}
+
+input[type=text] {
+  /* Style properties here */
+  font-size: 1.3rem;
+  padding:  0.2rem 0.5rem;
+  border: 0.1rem var(--light-gray) solid;
+  border-radius: 0.5rem;
+}
+
+input[type=text]:active {
+  border-color: var(--light-gray);
+  transition: 0.5s;
+}
