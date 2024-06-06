@@ -47,7 +47,7 @@ jobs:
            mv dist/ ../
 
       - name: Set working directory to main-api
-        run: cp dist/ ./main-api   
+        run: cp -r dist/ ./main-api   
 
       - name: Set working directory to main-api
         run: cd main-api
