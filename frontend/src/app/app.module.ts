@@ -26,16 +26,6 @@ import { ChatHeaderComponent } from './components/chat-header/chat-header.compon
 import { NavbarHeaderComponent } from './components/navbar-header/navbar-header.component';
 TimeAgo.addDefaultLocale(en);
 
-@Pipe({
-	name: 'asTimeAgo',
-})
-export class IsoTimeAgoPipe implements PipeTransform {
-	timeAgo = new TimeAgo('en-US');
-
-	transform(isoString: string): string {
-		return this.timeAgo.format(new Date(isoString));
-	}
-}
 import { ChatListItemComponent } from './components/chat-list-item/chat-list-item.component';
 import { ChatListComponent } from './components/chat-list/chat-list.component';
 import { MainChatDetailsViewComponent } from './components/main-chat-details-view/main-chat-details-view.component';
@@ -55,7 +45,6 @@ export class IsoTimeAgoPipe implements PipeTransform {
 		return this.timeAgo.format(new Date(isoString));
 	}
 }
-
 
 @Pipe({
   name: 'asTeamInviteId'
@@ -94,6 +83,7 @@ Amplify.configure({
 		MainChatDetailsViewComponent,
 		ChatsControllerComponent,
 		LogoComponent,
+		TeamInviteMessageComponent
 	],
 	imports: [
 		MatIconModule,
