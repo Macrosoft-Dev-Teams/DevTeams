@@ -2,7 +2,7 @@
   @if(isInviteMessage(message)) {
     <app-team-invite-message [inviteId]="getTeamInviteId(message.messageText ?? '') ?? -1" [message]="message.messageText ?? ''" />
   } @else {
-    <li>
+    <li [ngClass]="message.isCurrentUser ? 'msg-sender' : 'msg-receiver'">
       <em>{{ message.displayName }}</em>
       <p>{{ message.messageText }}</p>
       <footer>{{ message.sentAt | asTimeAgo }}</footer>
