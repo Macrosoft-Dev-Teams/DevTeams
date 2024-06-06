@@ -2,6 +2,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, catchError, map, switchMap, throwError } from 'rxjs';
 import { ConfigService } from './config.service';
+import { AuthService } from './auth.service';
 
 @Injectable({
 	providedIn: 'root',
@@ -15,10 +16,21 @@ export class HttpService {
 		}
 	};
 
+	idToken!: string;
+
 	constructor(
 		private http: HttpClient,
 		private configService: ConfigService,
-	) {}
+		private authService: AuthService
+	) {
+		this.setIdToken();
+	}
+
+	async setIdToken() {
+		const res = await this.authService.getIdToken();
+		
+		this.idToken = res !== undefined ? res : '';
+	}
 
 	get<T>(path: string): Observable<T> {
 		return this.makeEndpoint(path).pipe(
@@ -68,8 +80,7 @@ export class HttpService {
 	private get headers() {
 		return {
 			'Content-Type': 'application/json',
-			// TODO: Inject user token if available
-			Authorization: '1',
+			Authorization: this.idToken,
 		};
 	}
 

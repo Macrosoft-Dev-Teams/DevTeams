@@ -12,32 +12,37 @@ import { ToastrService } from 'ngx-toastr';
 export class MessagesListComponent {
 	@Input() chatId = -1;
 	messages = new BehaviorSubject<Message[]>([]);
-	subscription !: Subscription;
+	subscription!: Subscription;
 
-	constructor(private apiService: ApiService, private toastr: ToastrService) {}
+	constructor(
+		private apiService: ApiService,
+		private toastr: ToastrService,
+	) {}
 
 	ngOnInit() {
-		this.subscription = timer(0,2000).pipe(
-			switchMap(() => 
-				this.apiService
-					.listMessages(this.chatId)
-					.pipe(
+		this.subscription = timer(0, 2000)
+			.pipe(
+				switchMap(() =>
+					this.apiService.listMessages(this.chatId).pipe(
 						map((messages) =>
 							messages.map<Message>((message) => {
 								return {
 									...message,
-									displayName: message.isCurrentUser ? 'You' : message.displayName,
+									displayName: message.isCurrentUser
+										? 'You'
+										: message.displayName,
 								};
 							}),
 						),
-					)
+					),
+				),
 			)
-		).subscribe({
-			next: (messages) => this.messages.next(messages),
-			error: (error) => {
-				this.toastr.error(error, 'Error!');
-			},
-		});
+			.subscribe({
+				next: (messages) => this.messages.next(messages),
+				error: (error) => {
+					this.toastr.error(error, 'Error!');
+				},
+			});
 	}
 
 	onMessageSent(message: Message) {

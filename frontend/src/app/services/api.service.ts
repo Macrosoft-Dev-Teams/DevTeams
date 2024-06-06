@@ -7,6 +7,7 @@ import {
 	Message,
 	Chat,
 	WithTeamInviteId,
+	withUserId,
 } from '../interfaces';
 
 @Injectable({
@@ -45,5 +46,11 @@ export class ApiService {
 				userEmail,
 			})
 			.pipe(map((response) => response.teamInviteId));
+	}
+
+	addUser() {
+		return this.httpService
+			.post<withUserId>('users/', {})
+			.pipe(map((response) => response.userId));
 	}
 }
