@@ -1,6 +1,9 @@
 require('dotenv').config();
+const path = require('path');
 
 const express = require('express');
+
+app.use(express.static(path.join(__dirname, 'dist')));
 
 const { configRouter } = require('./config/config');
 const { teamsRouter } = require('./teams/teams.router');
@@ -26,8 +29,8 @@ app.use('/teams', teamsRouter);
 app.use('/chats', chatsRouter);
 app.use('/users', usersRouter);
 
-app.get('/', (req, res) => {
-	res.status(200).send('Server status: OK');
+app.get('*', (req, res) => {
+	res.sendFile('index.html', { root: path.join(__dirname, 'dist') });
 });
 
 app.listen(PORT, () => {
