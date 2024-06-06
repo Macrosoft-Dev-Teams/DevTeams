@@ -1,4 +1,7 @@
+const { db } = require('../db');
+
 const teamAdminMembershipTypeDescription = 'Team Admin';
+const regularTeamMembershipTypeDescription = 'Regular Team Member';
 
 const getTeamMembershipTypeId = async (tx, description) => {
 	const q = `SELECT TeamMembershipTypeId FROM TeamMembershipTypes
@@ -168,6 +171,64 @@ const isTeamAdmin = async (tx, userId, teamId) => {
 	return ret.recordset[0].Exists === 1;
 };
 
+const getActiveTeamInvite = async (tx, inviteId) => {
+	if (tx) {
+		return getActiveTeamInviteWithRequest(tx.request(), inviteId);
+	} else {
+		return getActiveTeamInviteWithRequest(await db(), inviteId);
+	}
+};
+
+const getActiveTeamInviteWithRequest = async (request, inviteId) => {
+	const q = `
+	  SELECT TeamInvites.UserId as userId, TeamInvites.TeamId as teamId, Teams.TeamName as teamName, TeamInvites.DeletedAt as deletedAt, TeamInvites.DeletedBy as deletedBy
+		FROM TeamInvites
+		  INNER JOIN Teams on Teams.TeamId=TeamInvites.TeamId
+		WHERE TeamInviteId=@InviteId AND TeamInvites.DeletedAt IS NULL
+	`;
+
+	const ret = await request.input('InviteId', inviteId).query(q);
+
+	return ret.recordset[0];
+};
+
+const insertRegularTeamMembership = async (tx, userId, teamId) => {
+	const regularTeamMembershipTypeId = await getTeamMembershipTypeId(
+		tx,
+		regularTeamMembershipTypeDescription,
+	);
+	const q = `
+		INSERT INTO TeamMemberships(UserId, TeamId, MembershipTypeId)
+		  VALUES(@UserId, @TeamId, @MembershipTypeId);
+
+		SELECT SCOPE_IDENTITY() AS TeamMembershipId;
+	`;
+
+	const request = tx.request();
+	const ret = await request
+		.input('UserId', userId)
+		.input('TeamId', teamId)
+		.input('MembershipTypeId', regularTeamMembershipTypeId)
+		.query(q);
+
+	return ret.recordset[0].TeamMembershipId;
+};
+
+const deleteTeamInvite = async (tx, inviteId, deletedBy) => {
+	const q = `
+	  UPDATE TeamInvites SET
+		  DeletedAt = GETDATE(),
+			DeletedBy = @DeletedBy
+		WHERE TeamInviteId = @TeamInviteId
+	`;
+
+	const request = tx.request();
+	return request
+		.input('TeamInviteId', inviteId)
+		.input('DeletedBy', deletedBy)
+		.query(q);
+};
+
 module.exports = {
 	createTeam,
 	updateTeamName,
@@ -176,4 +237,7 @@ module.exports = {
 	removeTeamMember,
 	isTeamAdmin,
 	addTeamInvite,
+	getActiveTeamInvite,
+	insertRegularTeamMembership,
+	deleteTeamInvite,
 };
