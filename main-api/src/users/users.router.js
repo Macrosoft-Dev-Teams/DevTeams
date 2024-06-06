@@ -1,5 +1,4 @@
 const { Router } = require('express');
-const { withTransaction } = require('../db');
 
 const { getUsers } = require('./users.cognito');
 const { safeAddUser } = require('./users.db');
@@ -16,16 +15,12 @@ usersRouter.get('/', async (req, res) => {
 	res.status(200).json(response.data);
 });
 
-usersRouter.post('/', (req, res) => {
-	return withTransaction(async (transaction) => {
-		const userId = await safeAddUser(
-			transaction,
-			req.body.email,
-			req.body.name,
-		);
+usersRouter.post('/', async (req, res) => {
+	const email = res.locals.email;
+	const name = res.locals.name;
 
-		res.status(201).json({ userId });
-	});
+	const userId = await safeAddUser(email, name);
+	res.status(201).json({ userId });
 });
 
 module.exports = {
