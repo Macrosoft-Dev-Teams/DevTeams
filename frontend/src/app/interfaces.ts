@@ -19,6 +19,10 @@ export interface withUserId {
 	userId: number,
 }
 
+export interface withChatId {
+	chatId: number,
+}
+
 export interface Message {
 	displayName: string,
 	isCurrentUser: boolean,

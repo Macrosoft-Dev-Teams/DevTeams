@@ -10,6 +10,7 @@ import {
 	withUserId,
 	TeamInvite,
 	User,
+	withChatId,
 } from '../interfaces';
 
 @Injectable({
@@ -69,5 +70,14 @@ export class ApiService {
 
 	searchUserByEmail(userEmail: string): Observable<User> {
 		return this.httpService.get<User>(`users/search/${userEmail}`);
+	}
+
+	createChat(otherUserId: number): Observable<Chat> {
+		let chatId = this.httpService
+			.post<withChatId>(`chats/`, {
+				otherUserId,
+			})
+			.pipe(map((response) => response.chatId));
+		return this.httpService.get<Chat>(`chats/${chatId}`); 
 	}
 }

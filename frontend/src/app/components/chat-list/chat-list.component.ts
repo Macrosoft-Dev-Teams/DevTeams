@@ -3,7 +3,6 @@ import { Chat, User } from '@src/app/interfaces';
 import { ApiService } from '@src/app/services/api.service';
 import { BehaviorSubject, Observable, Subscription, distinct, filter, map, switchMap, timer } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
-import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
 	selector: 'app-chat-list',
@@ -14,6 +13,7 @@ export class ChatListComponent {
 	@Input() searchText?: Observable<string>;
 	@Input() newTeamIds?: Observable<number>;
 	@Output() onOpenChat = new EventEmitter<Chat>();
+	@Output() onCreateChat = new EventEmitter<Chat>();
 	chats = new BehaviorSubject<Chat[]>([]);
 	searchUser =  {} as User;
 	subscription !: Subscription;
@@ -61,8 +61,7 @@ export class ChatListComponent {
 				if (this.searchString) {
 					this.apiService.searchUserByEmail(text).subscribe({
 						next: (user) => {
-							console.log(user);
-							if (user.userId && user.userId >= 0) {
+							if (user.userId && user.displayName && user.userId >= 0) {
 								this.searchUser = user;
 							}	else {
 								this.searchUser = {} as User;
@@ -74,7 +73,6 @@ export class ChatListComponent {
 						},
 					})
 				}	
-				console.log(this.searchUser);
 			},
 		});
 
@@ -94,6 +92,21 @@ export class ChatListComponent {
 
 	onChatSelected(chat: Chat) {
 		this.onOpenChat.emit(chat);
+	}
+
+	onSearchUserSelected(user: User) {
+		//todo
+		if (user.userId) {
+			this.apiService.createChat(user.userId).subscribe({
+					next: (chat) => {
+						this.onCreateChat.emit(chat);
+					},
+					error: (error) => {
+						this.toastr.error(error, 'Error!');
+					},
+				})
+		}
+		
 	}
 
 	ngOnDestroy() {

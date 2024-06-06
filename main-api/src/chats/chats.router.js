@@ -5,6 +5,7 @@ const {
 	getChats,
 	getSearch,
 	isChatMember,
+	getUserChat,
 } = require('./chats.db');
 const {
 	createTextMessage,
@@ -15,7 +16,6 @@ const {
 const chatsRouter = Router();
 const textLimit = 2000;
 
-// TODO: Should create new chat or return existing chat. Only one chat between two users.
 chatsRouter.post('/', (req, res) => {
 	return withTransaction(async (tx) => {
 		const chatId = await safeCreateChat(
@@ -75,6 +75,11 @@ chatsRouter.get('/:chatId/messages', async (req, res) => {
 chatsRouter.get('/', async (req, res) => {
 	const chats = await getChats(res.locals.userId);
 	res.status(200).json(chats);
+});
+
+chatsRouter.get('/:chatId', async (req, res) => {
+	const chat = await getUserChat(parseInt(req.params.chatId));
+	res.status(200).json(chat);
 });
 
 chatsRouter.get('/search', async (req, res) => {
