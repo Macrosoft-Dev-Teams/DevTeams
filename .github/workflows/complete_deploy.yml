@@ -2,7 +2,7 @@ name: deploy-angular-to-eb
 
 on:
   push:
-    branches: [main]
+    branches: [github-actions]
 
 permissions:
   contents: read
@@ -50,7 +50,7 @@ jobs:
       - name: Create ZIP deployment package
         run: |
           cd main-api
-          zip -r ../main-api-app.zip ./src/* ./dist/* package.json package-lock.json
+          zip -r ../main-api-app.zip ./src/* ./dist/* package.json package-lock.json app.js
           ls
 
       - name: Upload package to S3 bucket
