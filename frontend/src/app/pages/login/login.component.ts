@@ -23,8 +23,6 @@ export class LoginComponent {
 		private toastr: ToastrService,
 	) {
 		Hub.listen('auth', (data) => {
-			console.log('event type:', data.payload.event);
-
 			if (data.payload.event === 'signedIn') {
 				this.authService.handleAuthenticatedUser();
 				this.addUser();
