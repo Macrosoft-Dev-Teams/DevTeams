@@ -44,17 +44,17 @@ jobs:
       - name: Create ZIP deployment package
         run: |
            cd frontend
-           zip -r ../angular-app.zip ./dist/*
+           mv dist/ ../
 
       - name: Set working directory to main-api
-        run: cp angular-app.zip ./main-api   
+        run: cp dist/ ./main-api   
 
       - name: Set working directory to main-api
         run: cd main-api
 
       - name: Create ZIP deployment package
         run: |
-          zip -r ../main-api-app.zip ./*
+          zip -r ../main-api-app.zip ./src dist/ src/ package.json app.js package-lock.json
           ls ..
 
       - name: Upload package to S3 bucket
