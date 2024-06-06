@@ -149,7 +149,7 @@ const withTransaction = async (executable) => {
 	if (executable == undefined || !(executable instanceof Function)) {
 		throw new Error('Callback function required to execute in a transaction');
 	} else {
-		const tx = transaction();
+		const tx = await transaction();
 		try {
 			await tx.begin();
 			const result = await executable(tx);

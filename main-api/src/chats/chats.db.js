@@ -36,25 +36,32 @@ const createChat = async (tx, creatorUserId, otherUserId) => {
 
 const getChats = async (userId) => {
 	const q = `
-		SELECT cht.ChatName AS chatName, msg.LastSavedAt AS lastMessageAt FROM Chats as cht
+	SELECT cht.ChatId as chatId, TeamChats.TeamId as teamId, cht.CreatedAt as createdAt, cht.ChatName AS chatName, msg.SavedAt AS lastMessageAt, msg.MessageText as messageText
+	FROM Chats as cht
+	INNER JOIN (
+		SELECT ChatId FROM TeamChats as tc
 		INNER JOIN (
-			SELECT ChatId FROM TeamChats as tc
-			INNER JOIN (
-				SELECT UserId, TeamId 
-				FROM TeamMemberships
-				WHERE UserId = @UserId
-			) AS tm ON tm.TeamId = tc.TeamId
-			UNION
-			SELECT ChatId 
-			FROM UserChats as uc
+			SELECT UserId, TeamId 
+			FROM TeamMemberships
 			WHERE UserId = @UserId
-		) AS cids ON cids.ChatId = cht.ChatId
-		LEFT JOIN (
-			SELECT ChatId, MAX(SavedAt) as LastSavedAt
-			FROM Messages
-			GROUP BY ChatId
-		) AS msg ON msg.ChatId = cht.ChatId
-		ORDER BY msg.LastSavedAt DESC;
+		) AS tm ON tm.TeamId = tc.TeamId
+		UNION
+		SELECT ChatId 
+		FROM UserChats as uc
+		WHERE UserId = @UserId
+	) AS cids ON cids.ChatId = cht.ChatId
+	LEFT JOIN (
+		SELECT msgg.ChatId, msgg.SavedAt, tm.MessageText
+		FROM (
+			 SELECT *,
+				 ROW_NUMBER() OVER (PARTITION BY ChatId ORDER BY SavedAt DESC) AS rn
+			 FROM Messages
+		) AS msgg
+		LEFT JOIN TextMessages AS tm ON msgg.MessageId = tm.MessageId
+		WHERE msgg.rn = 1
+	) AS msg ON msg.ChatId = cht.ChatId
+	LEFT JOIN TeamChats ON TeamChats.ChatId=cht.ChatId
+	ORDER BY COALESCE(msg.SavedAt, cht.CreatedAt) DESC;
 	`;
 
 	const request = await db();
@@ -108,8 +115,76 @@ const getSearch = async (userId, searchStr) => {
 	return [users, teams];
 };
 
+const isChatMember = async (userId, chatId) => {
+	const q = `
+		SELECT CASE WHEN EXISTS(
+			SELECT 1 FROM (
+				SELECT ChatId FROM TeamChats as tc
+				INNER JOIN (
+					SELECT UserId, TeamId 
+					FROM TeamMemberships
+					WHERE UserId = @UserId
+				) AS tm ON tm.TeamId = tc.TeamId
+				UNION
+				SELECT ChatId 
+				FROM UserChats as uc
+				WHERE UserId = @UserId
+			) AS cids
+			WHERE cids.ChatId = @ChatId
+		) THEN 1 ELSE 0 END AS [Exists]
+	`;
+
+	const request = await db();
+	const ret = await request
+		.input('UserId', userId)
+		.input('ChatId', chatId)
+		.query(q);
+
+	return ret.recordset[0].Exists === 1;
+};
+
+const safeCreateChat = async (tx, creatorUserId, otherUserId) => {
+	const creatorUserName = await getUserDisplayName(tx, creatorUserId);
+	const otherUserName = await getUserDisplayName(tx, otherUserId);
+	const query = `
+		DECLARE @ChatId INT
+
+		SELECT @ChatId = uc1.ChatId
+		FROM UserChats as uc1
+		INNER JOIN UserChats as uc2
+		ON uc1.ChatId = uc2.ChatId
+		WHERE uc1.UserId = 1
+		AND uc2.UserId = 2
+				
+		IF @ChatId IS NULL
+		BEGIN
+			INSERT INTO Chats(ChatName)
+				VALUES(@ChatName);
+		
+			SELECT @ChatId = SCOPE_IDENTITY();
+		
+			INSERT INTO UserChats(UserId, ChatId)
+				VALUES (@CreatorUserId, @ChatId), (@OtherUserId, @ChatId);
+		END
+				
+		SELECT @ChatId AS chatId
+  `;
+
+	const request = tx.request();
+
+	const response = await request
+		.input('ChatName', `${creatorUserName}, ${otherUserName}`)
+		.input('CreatorUserId', creatorUserId)
+		.input('OtherUserId', otherUserId)
+		.query(query);
+
+	return response.recordset[0].chatId;
+};
+
 module.exports = {
 	createChat,
 	getChats,
 	getSearch,
+	isChatMember,
+	safeCreateChat,
 };

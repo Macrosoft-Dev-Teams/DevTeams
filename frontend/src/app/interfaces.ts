@@ -6,3 +6,30 @@ export interface AppConfig {
 export interface WithMessageId {
   messageId: number,
 }
+
+export interface WithTeamId {
+  teamId: number,
+}
+
+export interface WithTeamInviteId {
+  teamInviteId: number,
+}
+
+export interface Message {
+	displayName: string,
+	isCurrentUser: boolean,
+	userIsDeleted: boolean,
+	messageText?: string,
+	filePath?: string,
+	savedAt: string,
+	sentAt: string,
+	messageId: number,	
+}
+
+export interface Chat {
+	chatId: number;
+	teamId: number,
+	chatName: string;
+	messageText?: string;
+	lastMessageAt?: string;
+}

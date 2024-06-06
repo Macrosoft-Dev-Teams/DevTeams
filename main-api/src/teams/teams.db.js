@@ -1,4 +1,7 @@
-const teamAdminMebershipTypeDescription = 'Team Admin';
+const { db } = require('../db');
+
+const teamAdminMembershipTypeDescription = 'Team Admin';
+const regularTeamMembershipTypeDescription = 'Regular Team Member';
 
 const getTeamMembershipTypeId = async (tx, description) => {
 	const q = `SELECT TeamMembershipTypeId FROM TeamMembershipTypes
@@ -13,7 +16,7 @@ const getTeamMembershipTypeId = async (tx, description) => {
 const createTeam = async (tx, teamName, creatorUserId) => {
 	const teamAdminMembershipTypeId = await getTeamMembershipTypeId(
 		tx,
-		teamAdminMebershipTypeDescription,
+		teamAdminMembershipTypeDescription,
 	);
 	const q = `
   INSERT INTO Teams(TeamName)
@@ -85,10 +88,26 @@ const deleteTeam = async (tx, deletedBy, teamId) => {
 	return ret.recordset[0].teamId;
 };
 
+const addTeamInvite = async (tx, userId, teamId) => {
+	const q = `
+		INSERT INTO TeamInvites(UserId, TeamId)
+		VALUES(@UserId, @TeamId);
+
+		SELECT SCOPE_IDENTITY() AS TeamInviteId;
+	`;
+
+	const request = tx.request();
+	const ret = await request
+		.input('UserId', userId)
+		.input('TeamId', teamId)
+		.query(q);
+	return ret.recordset[0].TeamInviteId;
+};
+
 const addTeamMember = async (tx, userId, teamId) => {
 	const teamAdminMembershipTypeId = await getTeamMembershipTypeId(
 		tx,
-		teamAdminMebershipTypeDescription,
+		teamAdminMembershipTypeDescription,
 	);
 	const q = `
 		INSERT INTO TeamMemberships(UserId, TeamId, MembershipTypeId)
@@ -126,10 +145,99 @@ const removeTeamMember = async (tx, deletedBy, userId, teamId) => {
 	return ret.recordset[0].teamMembershipId;
 };
 
+const isTeamAdmin = async (tx, userId, teamId) => {
+	const teamAdminMembershipTypeId = await getTeamMembershipTypeId(
+		tx,
+		teamAdminMembershipTypeDescription,
+	);
+
+	const q = `
+		SELECT CASE WHEN EXISTS(
+			SELECT 1 FROM TeamMemberships 
+			WHERE UserId=@UserId 
+			  AND TeamId=@TeamId
+				AND MembershipTypeId=@TeamAdminMembershipTypeId
+			  AND DeletedAt IS NULL) THEN
+			1 ELSE 0 END AS [Exists]
+	`;
+
+	const request = tx.request();
+	const ret = await request
+		.input('UserId', userId)
+		.input('TeamId', teamId)
+		.input('TeamAdminMembershipTypeId', teamAdminMembershipTypeId)
+		.query(q);
+
+	return ret.recordset[0].Exists === 1;
+};
+
+const getActiveTeamInvite = async (tx, inviteId) => {
+	if (tx) {
+		return getActiveTeamInviteWithRequest(tx.request(), inviteId);
+	} else {
+		return getActiveTeamInviteWithRequest(await db(), inviteId);
+	}
+};
+
+const getActiveTeamInviteWithRequest = async (request, inviteId) => {
+	const q = `
+	  SELECT TeamInvites.UserId as userId, TeamInvites.TeamId as teamId, Teams.TeamName as teamName, TeamInvites.DeletedAt as deletedAt, TeamInvites.DeletedBy as deletedBy
+		FROM TeamInvites
+		  INNER JOIN Teams on Teams.TeamId=TeamInvites.TeamId
+		WHERE TeamInviteId=@InviteId AND TeamInvites.DeletedAt IS NULL
+	`;
+
+	const ret = await request.input('InviteId', inviteId).query(q);
+
+	return ret.recordset[0];
+};
+
+const insertRegularTeamMembership = async (tx, userId, teamId) => {
+	const regularTeamMembershipTypeId = await getTeamMembershipTypeId(
+		tx,
+		regularTeamMembershipTypeDescription,
+	);
+	const q = `
+		INSERT INTO TeamMemberships(UserId, TeamId, MembershipTypeId)
+		  VALUES(@UserId, @TeamId, @MembershipTypeId);
+
+		SELECT SCOPE_IDENTITY() AS TeamMembershipId;
+	`;
+
+	const request = tx.request();
+	const ret = await request
+		.input('UserId', userId)
+		.input('TeamId', teamId)
+		.input('MembershipTypeId', regularTeamMembershipTypeId)
+		.query(q);
+
+	return ret.recordset[0].TeamMembershipId;
+};
+
+const deleteTeamInvite = async (tx, inviteId, deletedBy) => {
+	const q = `
+	  UPDATE TeamInvites SET
+		  DeletedAt = GETDATE(),
+			DeletedBy = @DeletedBy
+		WHERE TeamInviteId = @TeamInviteId
+	`;
+
+	const request = tx.request();
+	return request
+		.input('TeamInviteId', inviteId)
+		.input('DeletedBy', deletedBy)
+		.query(q);
+};
+
 module.exports = {
 	createTeam,
 	updateTeamName,
 	deleteTeam,
 	addTeamMember,
 	removeTeamMember,
+	isTeamAdmin,
+	addTeamInvite,
+	getActiveTeamInvite,
+	insertRegularTeamMembership,
+	deleteTeamInvite,
 };

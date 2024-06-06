@@ -1,13 +1,22 @@
-<section class="container">
+<app-chats-controller
+	[newTeamIds]="newTeamIdsObservable"
+	(onOpenChat)="onChatSelected($event)"
+	(onCreateNewTeam)="onCreateNewTeam()"
+/>
+@if (creatingNewTeam) {
+	<app-create-team
+		(onCreateTeamCancelled)="onCreateTeamCancelled()"
+		(onTeamCreated)="onTeamCreated($event)"
+/>
+} @else {
+	@if (currentChat) {
+		<app-main-chat-details-view [chat]="currentChat" />
+	} @else {
+		<p>
+			Select a chat from the left pane to start chatting. Or search for a
+			specific user email.
+		</p>
+	}
+}
 
-  <div class="logo-container">
-    <img src="icons/logo.png" alt="DevTeams" class="logo">
-    <h1 class="title">DevTeams</h1>
-  </div>
-
-  <div class="login-container">
-    <h2>Welcome to Dev Teams</h2>
-    <button>Sign out</button>
-  </div>
-
-</section>
+<button class="btn" (click)="signOut()">Sign Out</button>

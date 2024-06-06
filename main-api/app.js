@@ -1,10 +1,13 @@
 require('dotenv').config();
 
 const express = require('express');
-const { configRouter } = require('./src/config/config');
-const { teamsRouter } = require('./src/teams/teams.router');
-const { chatsRouter } = require('./src/chats/chats.router');
-const { auth } = require('./src/auth');
+
+const { configRouter } = require('./config/config');
+const { teamsRouter } = require('./teams/teams.router');
+const { chatsRouter } = require('./chats/chats.router');
+const { usersRouter } = require('./users/users.router');
+
+const { auth } = require('./auth');
 
 const PORT = process.env.PORT || 3001;
 const app = express();
@@ -21,11 +24,13 @@ app.use('/config', configRouter);
 app.use(auth);
 app.use('/teams', teamsRouter);
 app.use('/chats', chatsRouter);
+app.use('/users', usersRouter);
 
 app.get('/', (req, res) => {
-	res.status(200).send('This seems to be working');
+	res.status(200).send('Server status: OK');
 });
 
 app.listen(PORT, () => {
+	// eslint-disable-next-line no-console
 	console.log(`Main API is running on port ${PORT}`);
 });

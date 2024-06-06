@@ -1,5 +1,6 @@
 import { Component} from '@angular/core';
 import { Router } from '@angular/router';
+import { AuthService } from '@src/app/services/auth.service';
 
 @Component({
   selector: 'app-logged-out',
@@ -8,7 +9,11 @@ import { Router } from '@angular/router';
 })
 export class LoggedOutComponent {
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private authService: AuthService) {}
+
+  ngOnInit() {
+    this.authService.handleAuthenticatedUser();
+  }
 
   signIn(){
 
