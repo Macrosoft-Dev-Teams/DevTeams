@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Chat } from '@src/app/interfaces';
 import { ApiService } from '@src/app/services/api.service';
-import { BehaviorSubject, Observable, map, switchMap } from 'rxjs';
+import { BehaviorSubject, Observable, Subscription, map, switchMap, timer } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
@@ -14,11 +14,14 @@ export class ChatListComponent {
 	@Input() newTeamIds?: Observable<number>;
 	@Output() onOpenChat = new EventEmitter<Chat>();
 	chats = new BehaviorSubject<Chat[]>([]);
+	subscription !: Subscription;
 
 	constructor(private apiService: ApiService, private toastr: ToastrService) {}
 
 	ngOnInit() {
-		this.apiService.listChats().subscribe({
+		this.subscription = timer(0,2000).pipe(
+			switchMap(() => this.apiService.listChats())
+		).subscribe({
 			next: (chats) => this.chats.next(chats),
 			error: (error) => {
 				this.toastr.error(error, 'Error!');
@@ -45,5 +48,9 @@ export class ChatListComponent {
 
 	onChatSelected(chat: Chat) {
 		this.onOpenChat.emit(chat);
+	}
+
+	ngOnDestroy() {
+		this.subscription.unsubscribe();
 	}
 }
