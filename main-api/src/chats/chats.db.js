@@ -143,9 +143,48 @@ const isChatMember = async (userId, chatId) => {
 	return ret.recordset[0].Exists === 1;
 };
 
+const safeCreateChat = async (tx, creatorUserId, otherUserId) => {
+	const creatorUserName = await getUserDisplayName(tx, creatorUserId);
+	const otherUserName = await getUserDisplayName(tx, otherUserId);
+	const query = `
+		DECLARE @ChatId INT
+
+		SELECT @ChatId = uc1.ChatId
+		FROM UserChats as uc1
+		INNER JOIN UserChats as uc2
+		ON uc1.ChatId = uc2.ChatId
+		WHERE uc1.UserId = 1
+		AND uc2.UserId = 2
+				
+		IF @ChatId IS NULL
+		BEGIN
+			INSERT INTO Chats(ChatName)
+				VALUES(@ChatName);
+		
+			SELECT @ChatId = SCOPE_IDENTITY();
+		
+			INSERT INTO UserChats(UserId, ChatId)
+				VALUES (@CreatorUserId, @ChatId), (@OtherUserId, @ChatId);
+		END
+				
+		SELECT @ChatId AS chatId
+  `;
+
+	const request = tx.request();
+
+	const response = await request
+		.input('ChatName', `${creatorUserName}, ${otherUserName}`)
+		.input('CreatorUserId', creatorUserId)
+		.input('OtherUserId', otherUserId)
+		.query(query);
+
+	return response.recordset[0].chatId;
+};
+
 module.exports = {
 	createChat,
 	getChats,
 	getSearch,
 	isChatMember,
+	safeCreateChat,
 };

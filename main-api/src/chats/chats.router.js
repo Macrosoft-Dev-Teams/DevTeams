@@ -1,6 +1,11 @@
 const { Router } = require('express');
 const { withTransaction } = require('../db');
-const { createChat, getChats, getSearch, isChatMember } = require('./chats.db');
+const {
+	safeCreateChat,
+	getChats,
+	getSearch,
+	isChatMember,
+} = require('./chats.db');
 const {
 	createTextMessage,
 	createFileShareMessage,
@@ -13,7 +18,7 @@ const textLimit = 2000;
 // TODO: Should create new chat or return existing chat. Only one chat between two users.
 chatsRouter.post('/', (req, res) => {
 	return withTransaction(async (tx) => {
-		const chatId = await createChat(
+		const chatId = await safeCreateChat(
 			tx,
 			res.locals.userId,
 			req.body.otherUserId,
