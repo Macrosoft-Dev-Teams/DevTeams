@@ -2,7 +2,7 @@ name: deploy-angular-to-eb
 
 on:
   push:
-    branches: [main]
+    branches: [gih]
 
 permissions:
   contents: read
