@@ -22,9 +22,8 @@ export class ChatListComponent {
 	constructor(private apiService: ApiService, private toastr: ToastrService) {}
 
 	ngOnInit() {
-		this.subscription = timer(0,5000).pipe(
+		this.subscription = timer(0,2000).pipe(
 			switchMap(() => this.apiService.listChats()),
-			distinct(chats => JSON.stringify(chats)),
 			map((chats) => { 
 				if (this.searchString && /\S/.test(this.searchString)) { 
 					return chats.filter(chat => chat.chatName.toLowerCase().includes(this.searchString))
@@ -33,6 +32,8 @@ export class ChatListComponent {
 					return chats
 				}
 			})
+		).pipe(
+			distinct(chats => JSON.stringify(chats)),
 		).subscribe({
 			next: (chats) => this.chats.next(chats),
 			error: (error) => {

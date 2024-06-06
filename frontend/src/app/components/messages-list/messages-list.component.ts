@@ -20,11 +20,10 @@ export class MessagesListComponent {
 	) {}
 
 	ngOnInit() {
-		this.subscription = timer(0, 5000)
+		this.subscription = timer(0, 2000)
 			.pipe(
 				switchMap(() =>
 					this.apiService.listMessages(this.chatId).pipe(
-						distinct(messages => JSON.stringify(messages)),
 						map((messages) =>
 							messages.map<Message>((message) => {
 								return {
@@ -37,6 +36,9 @@ export class MessagesListComponent {
 						),
 					),
 				),
+			)
+			.pipe(
+				distinct(messages => JSON.stringify(messages)),
 			)
 			.subscribe({
 				next: (messages) => this.messages.next(messages),
