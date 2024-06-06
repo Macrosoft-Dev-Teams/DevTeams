@@ -11,7 +11,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 })
 export class HomeComponent {
 	newTeamIds = new BehaviorSubject(-1);
-	creatingNewTeam = false;
+	creatingNewTeam:boolean = false;
 	currentChat?: Chat;
 
 	constructor(

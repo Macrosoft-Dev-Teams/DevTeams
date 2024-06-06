@@ -1,4 +1,4 @@
-import { Component, EventEmitter, HostListener, Input, Output } from '@angular/core';
+import { Component, EventEmitter, HostBinding, HostListener, Input, Output } from '@angular/core';
 import { Chat } from '@src/app/interfaces';
 
 @Component({
@@ -13,5 +13,11 @@ export class ChatListItemComponent {
   @HostListener("click") onClick(){
     const data = this.chat.chatId;
     this.dataEvent.emit(data);
+  }
+  
+  @HostBinding('class.selected') isSelected: boolean = false;
+
+  toggleSelection() {
+    this.isSelected = !this.isSelected;
   }
 }

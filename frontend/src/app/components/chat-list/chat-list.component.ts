@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Chat } from '@src/app/interfaces';
 import { ApiService } from '@src/app/services/api.service';
-import { BehaviorSubject, Observable, Subscription, map, switchMap, timer } from 'rxjs';
+import { BehaviorSubject, Observable, Subscription, distinct, map, switchMap, timer } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
@@ -19,8 +19,9 @@ export class ChatListComponent {
 	constructor(private apiService: ApiService, private toastr: ToastrService) {}
 
 	ngOnInit() {
-		this.subscription = timer(0,2000).pipe(
-			switchMap(() => this.apiService.listChats())
+		this.subscription = timer(0,5000).pipe(
+			switchMap(() => this.apiService.listChats()),
+			distinct(chats => JSON.stringify(chats))
 		).subscribe({
 			next: (chats) => this.chats.next(chats),
 			error: (error) => {

@@ -1,0 +1,25 @@
+:host {
+  display: flex;
+}
+
+section {
+  display: flex;
+  justify-content: space-between;
+}
+
+button {
+  border: none;
+}
+
+input[type=text] {
+  /* Style properties here */
+  font-size: 1rem;
+  padding:  0.2rem 0.5rem;
+  border: 0.1rem var(--light-gray) solid;
+  border-radius: 0.5rem;
+}
+
+input[type=text]:active {
+  border-color: red;
+  transition: 0.5s;
+}
