@@ -1,12 +1,16 @@
 :host {
   display: flex;
   font-size: 1.3rem;
-  border-bottom: 0.1rem var(--blue-color) solid;
 }
 
 section {
   display: flex;
-  justify-content: space-evenly;
+  justify-content: space-between;
+}
+
+article {
+  display: flex;
+  gap: 5px;  
 }
 
 button {
@@ -36,9 +40,15 @@ input[type=text] {
   padding:  0.2rem 0.5rem;
   border: 0.1rem var(--light-gray) solid;
   border-radius: 0.5rem;
+  padding-top: 10px;
+  padding-bottom: 10px;
 }
 
 input[type=text]:active {
   border-color: var(--light-gray);
   transition: 0.5s;
+}
+
+mat-icon:hover {
+  cursor: pointer;
 }

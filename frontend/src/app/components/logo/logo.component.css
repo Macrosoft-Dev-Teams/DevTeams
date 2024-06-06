@@ -1,9 +1,7 @@
 .logo-container {
   display: flex;
   justify-content: center;
-  gap: 0.5rem;
-  width: 100%;
-  padding: 1rem 0rem;
+  gap: 2px;
 }
 
 .logo {

@@ -1,5 +1,4 @@
 <div class="chat-name">
-	<mat-icon>account_circle</mat-icon>
 	<h1>{{ chat.chatName }}</h1>
 </div>
 
@@ -10,6 +9,7 @@
 			[formControl]="newMemberEmail"
 			(keydown.enter)="onSubmitNewMemberInvite()"
 			maxlength="254"
+			placeholder="Email to Invite"
 		/>
 		<button type="button" (click)="toggleNewMemberEmailInput()">Cancel</button>
 	</article>
