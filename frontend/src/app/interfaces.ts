@@ -37,3 +37,12 @@ export interface Chat {
 	messageText?: string;
 	lastMessageAt?: string;
 }
+
+export interface TeamInvite {
+	userId: number,
+	teamId: number,
+	teamName: string,
+	deletedAt?: string,
+	deletedBy?: string,
+}
+
