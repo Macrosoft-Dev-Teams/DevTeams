@@ -23,7 +23,14 @@ import { MessagesListComponent } from './components/messages-list/messages-list.
 import TimeAgo from 'javascript-time-ago';
 import en from 'javascript-time-ago/locale/en';
 import { ChatHeaderComponent } from './components/chat-header/chat-header.component';
-import { NavbarHeaderComponent } from './components/navbar-header/navbar-header.component';
+import { NavbarHeaderComponent } from './components/navbar-header/navbar-header.component'
+import { ChatListItemComponent } from './components/chat-list-item/chat-list-item.component';
+import { ChatListComponent } from './components/chat-list/chat-list.component';
+import { MainChatDetailsViewComponent } from './components/main-chat-details-view/main-chat-details-view.component';
+import { ChatsControllerComponent } from './components/chats-controller/chats-controller.component';
+import { HomeComponent } from './pages/home/home.component';
+import { TeamInviteMessageComponent } from './components/team-invite-message/team-invite-message.component';
+
 TimeAgo.addDefaultLocale(en);
 
 @Pipe({
@@ -36,13 +43,17 @@ export class IsoTimeAgoPipe implements PipeTransform {
 		return this.timeAgo.format(new Date(isoString));
 	}
 }
-import { ChatListItemComponent } from './components/chat-list-item/chat-list-item.component';
-import { ChatListComponent } from './components/chat-list/chat-list.component';
-import { MainChatDetailsViewComponent } from './components/main-chat-details-view/main-chat-details-view.component';
-import { ChatsControllerComponent } from './components/chats-controller/chats-controller.component';
-import { HomeComponent } from './pages/home/home.component';
-import { LogoComponent } from './components/logo/logo.component';
-import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+
+
+@Pipe({
+  name: 'asTeamInviteId'
+})
+export class AsTeamInviteIdPipe implements PipeTransform {
+  transform(inviteMessage: string): number | undefined {
+		const matches = RegExp(/\d+/).exec(inviteMessage);
+		return matches ? parseInt(matches[0]) : undefined;
+  }
+}
 
 Amplify.configure({
 	Auth: {
@@ -54,22 +65,7 @@ Amplify.configure({
 });
 
 @NgModule({
-	declarations: [
-		IsoTimeAgoPipe,
-		CreateTeamComponent,
-		ChatInputComponent,
-		AppComponent,
-		HomeComponent,
-		LoginComponent,
-		MessagesListComponent,
-		ChatHeaderComponent,
-		NavbarHeaderComponent,
-		ChatListItemComponent,
-		ChatListComponent,
-		MainChatDetailsViewComponent,
-		ChatsControllerComponent,
-		LogoComponent,
-	],
+	declarations: [IsoTimeAgoPipe, AsTeamInviteIdPipe, CreateTeamComponent, ChatInputComponent, AppComponent, HomeComponent, LoginComponent, MessagesListComponent, ChatHeaderComponent, NavbarHeaderComponent, ChatListItemComponent, ChatListComponent, MainChatDetailsViewComponent, ChatsControllerComponent, TeamInviteMessageComponent],
 	imports: [
 		MatIconModule,
 		RouterOutlet,
