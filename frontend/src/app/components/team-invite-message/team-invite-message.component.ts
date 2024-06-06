@@ -20,7 +20,7 @@ export class TeamInviteMessageComponent {
 	updateInviteState(accepted: boolean) {
 		this.apiService.updateInvite(this.inviteId, accepted).subscribe({
 			next: () => {
-				this.toast.success('Added to chat', 'Success!');
+				this.toast.success(accepted ? 'Accepted invite' : 'Declined invite', 'Success!');
         this.showButtons = false;
 			},
 

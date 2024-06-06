@@ -1,8 +1,12 @@
 <section>
 	<app-logo />
-	<button class="button" (click)="signOut()" >Sign Out</button>
-	<button  type="button" (click)="onCreateNewTeamButtonClicked()">
-		<mat-icon fontIcon="group_add"></mat-icon>
-	</button>
+	<article>
+		<button  type="button" (click)="signOut()">
+			<mat-icon fontIcon="power_settings_new"></mat-icon>
+		</button>
+		<button  type="button" (click)="onCreateNewTeamButtonClicked()">
+			<mat-icon fontIcon="group_add"></mat-icon>
+		</button>
+	</article>
 </section>
 <input type="text" [formControl]="searchText" placeholder="search chats and people"/>

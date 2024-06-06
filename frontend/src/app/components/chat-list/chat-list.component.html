@@ -4,9 +4,7 @@
 @if(chats.value.length === 0) {
   <p>You don't have any chats yet</p>
 } @else {
-  <ul *ngFor="let chat of chats | async">
-    <li (click)="onChatSelected(chat)" >
-      <app-chat-list-item [chat]="chat"/>
-    </li>
+  <ul>
+    <app-chat-list-item  *ngFor="let chat of chats | async" (click)="onChatSelected(chat)" [chat]="chat"/>
   </ul>
 }

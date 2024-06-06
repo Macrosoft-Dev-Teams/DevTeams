@@ -8,6 +8,8 @@
 	align-items: center;
 	width: 100%;
 	background-color: var(--bg-color);
+	padding: 5px;
+	cursor: pointer;
 }
 
 :host:hover {
@@ -25,6 +27,9 @@ section, p, h4 {
 
 p {
 	color: var(--primary-text-color);
+	text-overflow: ellipsis;
+	white-space: no-wrap;
+	overflow: hidden;
 }
 
 h4 {
