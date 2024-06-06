@@ -47,7 +47,7 @@ jobs:
       # - name: Set working directory to main-api
       #   run: cd main-api
 
-      - name: Create ZIP deployment package
+      - name: Create ZIP deployment package for main api
         run: |
           cd main-api
           zip -r ../main-api-app.zip ./src/* ./dist/* package.json package-lock.json app.js
