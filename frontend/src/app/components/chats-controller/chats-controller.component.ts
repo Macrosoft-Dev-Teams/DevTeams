@@ -11,6 +11,7 @@ export class ChatsControllerComponent {
   @Input() newTeamIds?: Observable<number>;
   @Output() onCreateNewTeam = new EventEmitter();
   @Output() onOpenChat = new EventEmitter<Chat>();
+	@Output() onCreateChat = new EventEmitter<Chat>();
   private searchText = new BehaviorSubject('');
 
   get searchTextObservable(): Observable<string> {
@@ -28,4 +29,8 @@ export class ChatsControllerComponent {
   onChatSelected(chat: any) {
     this.onOpenChat.emit(chat);
   }
+
+  onSearchUserSelected(chat: any) {
+		this.onCreateChat.emit(chat);
+	}
 }

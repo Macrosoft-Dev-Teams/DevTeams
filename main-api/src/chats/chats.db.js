@@ -181,10 +181,34 @@ const safeCreateChat = async (tx, creatorUserId, otherUserId) => {
 	return response.recordset[0].chatId;
 };
 
+const getUserChat = async (chatId) => {
+	const q = `
+	SELECT cht.ChatId as chatId, TeamChats.TeamId as teamId, cht.CreatedAt as createdAt, cht.ChatName AS chatName, msg.SavedAt AS lastMessageAt, msg.MessageText as messageText
+	FROM UserChats as cht
+	LEFT JOIN (
+		SELECT msgg.ChatId, msgg.SavedAt, tm.MessageText
+		FROM (
+			 SELECT *,
+				 ROW_NUMBER() OVER (PARTITION BY ChatId ORDER BY SavedAt DESC) AS rn
+			 FROM Messages
+		) AS msgg
+		LEFT JOIN TextMessages AS tm ON msgg.MessageId = tm.MessageId
+		WHERE msgg.rn = 1
+	) AS msg ON msg.ChatId = cht.ChatId
+	LEFT JOIN TeamChats ON TeamChats.ChatId=cht.ChatId
+	WHERE cht.ChatId = @ChatId;
+	`;
+
+	const request = await db();
+	const ret = await request.input('ChatId', chatId).query(q);
+	return ret.recordset[0];
+};
+
 module.exports = {
 	createChat,
 	getChats,
 	getSearch,
 	isChatMember,
 	safeCreateChat,
+	getUserChat,
 };

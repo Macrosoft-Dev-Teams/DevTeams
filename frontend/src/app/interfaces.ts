@@ -19,6 +19,10 @@ export interface withUserId {
 	userId: number,
 }
 
+export interface withChatId {
+	chatId: number,
+}
+
 export interface Message {
 	displayName: string,
 	isCurrentUser: boolean,
@@ -36,4 +40,18 @@ export interface Chat {
 	chatName: string;
 	messageText?: string;
 	lastMessageAt?: string;
+}
+
+export interface TeamInvite {
+	userId: number,
+	teamId: number,
+	teamName: string,
+	deletedAt?: string,
+	deletedBy?: string,
+}
+
+
+export interface User {
+	userId?: number,
+	displayName?: string,
 }

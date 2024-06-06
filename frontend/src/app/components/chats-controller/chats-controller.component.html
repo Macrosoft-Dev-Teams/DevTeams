@@ -1,2 +1,2 @@
 <app-navbar-header (onSearchChanged)="onSearchChanged($event)" (onCreateNewTeam)="handleCreateNewTeam()" />
-<app-chat-list (onOpenChat)="onChatSelected($event)" [searchText]="searchTextObservable" [newTeamIds]="newTeamIds" />
+<app-chat-list (onCreateChat)="onSearchUserSelected($event)" (onOpenChat)="onChatSelected($event)" [searchText]="searchTextObservable" [newTeamIds]="newTeamIds" />
