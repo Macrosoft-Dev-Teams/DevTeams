@@ -3,8 +3,6 @@ const path = require('path');
 
 const express = require('express');
 
-app.use(express.static(path.join(__dirname, 'dist/frontend/browser')));
-
 const { configRouter } = require('./config/config');
 const { teamsRouter } = require('./teams/teams.router');
 const { chatsRouter } = require('./chats/chats.router');
@@ -18,6 +16,7 @@ const app = express();
 const helmet = require('helmet');
 const cors = require('cors');
 
+app.use(express.static(path.join(__dirname, 'dist/frontend/browser')));
 app.use(express.json());
 app.use(helmet());
 app.use(cors());
