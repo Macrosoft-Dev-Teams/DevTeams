@@ -57,5 +57,6 @@ export class AuthService {
 
 	signOut() {
 		signOut();
+		this.router.navigate(['/']);
 	}
 }

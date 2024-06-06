@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import {MatIconModule} from '@angular/material/icon';import { Component, inject } from '@angular/core';
 
 @Component({
 	selector: 'app-root',
