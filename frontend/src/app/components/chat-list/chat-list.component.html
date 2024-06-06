@@ -1,3 +1,6 @@
+@if(this.searchUser.userId) {
+  <app-search-user-result [user]="searchUser" (click)="onSearchUserSelected(searchUser)"/>
+}
 @if(chats.value.length === 0) {
   <p>You don't have any chats yet</p>
 } @else {

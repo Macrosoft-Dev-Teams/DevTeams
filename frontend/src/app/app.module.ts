@@ -32,6 +32,7 @@ import { MainChatDetailsViewComponent } from './components/main-chat-details-vie
 import { ChatsControllerComponent } from './components/chats-controller/chats-controller.component';
 import { HomeComponent } from './pages/home/home.component';
 import { TeamInviteMessageComponent } from './components/team-invite-message/team-invite-message.component';
+import { SearchUserResultComponent } from './components/search-user-result/search-user-result.component';
 
 TimeAgo.addDefaultLocale(en);
 
@@ -84,7 +85,7 @@ Amplify.configure({
 		ChatsControllerComponent,
 		LogoComponent,
 		TeamInviteMessageComponent
-	],
+	, SearchUserResultComponent],
 	imports: [
 		MatIconModule,
 		RouterOutlet,

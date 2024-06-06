@@ -41,6 +41,10 @@ export class HomeComponent {
 		this.currentChat = chat;
 	}
 
+	onSearchUserSelected(chat: any) {
+		this.currentChat = chat;
+	}
+
 	signOut() {
 		this.authService.signOut();
 		this.router.navigate(['/']);
