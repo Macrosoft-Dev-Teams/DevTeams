@@ -1,0 +1,65 @@
+name: deploy-mainapi-to-eb
+
+on:
+  push:
+    branches: [gih]
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Assume the deploy pipeline user role on push
+        uses: aws-actions/configure-aws-credentials@v4.0.1
+        with:
+          role-to-assume: ${{ secrets.AWS_ASSUME_ROLE }}
+          role-session-name: GitHub_to_AWS_via_FederatedOIDC
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Copy environment config from S3 bucket
+        run: aws s3 cp s3://${{ secrets.AWS_BUCKET }}/.env .
+
+      - name: Set working directory to main-api
+        run: cd main-api
+
+      - name: Create ZIP deployment package
+        run: |
+          zip -r ../main-api-app.zip ./*
+          ls ..
+
+      - name: Upload package to S3 bucket
+        run: aws s3 cp main-api-app.zip s3://${{ secrets.AWS_BUCKET }}/main-api-app.zip
+
+      - name: Check if ElasticBeanstalk Application Version already exists
+        run: |
+          output=$(aws elasticbeanstalk describe-application-versions --application-name "${{ secrets.AWS_MAIN_APP }}" --version-label "ver-${{ github.sha }}" --output json)
+          version_exists=$(echo $output | jq '.ApplicationVersions | length')
+          if [ $version_exists -eq 0 ]; then
+            echo "ElasticBeanstalk Application Version does not exist."
+            exit 0
+          else
+            echo "ElasticBeanstalk Application Version already exists. Skipping creation."
+            exit 1
+          fi
+        continue-on-error: true
+
+      - name: Create new ElasticBeanstalk Application Version
+        run: |
+          aws elasticbeanstalk create-application-version \
+          --application-name ${{ secrets.AWS_MAIN_APP }} \
+          --source-bundle S3Bucket="${{ secrets.AWS_BUCKET }}",S3Key="main-api-app.zip" \
+          --version-label "ver-${{ github.sha }}" \
+          --description "commit-sha-${{ github.sha }}"
+
+        if: ${{ failure() }} != 'true'
+
+      - name: Deploy new ElasticBeanstalk Application Version
+        run: |
+          aws elasticbeanstalk wait environment-exists update-environment --environment-name ${{ secrets.AWS_MAIN_APP_ENV }} --version-label "ver-${{ github.sha }}"

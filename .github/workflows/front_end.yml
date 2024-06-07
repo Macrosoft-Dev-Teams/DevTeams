@@ -1,0 +1,70 @@
+name: deploy-angular-to-eb
+
+on:
+  push:
+    branches: [gih]
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '20'
+
+      # - name: Navigate to frontend directory
+      #   run: cd frontend    
+
+      - name: Install frontend dependencies
+        run: | 
+         cd frontend
+         npm cache clean --force
+         npm install -g @angular/cli
+         npm install
+
+      - name: Build Angular App
+        run: |
+          cd frontend
+          ng build
+          ls 
+
+      - name: Assume the deploy pipeline user role
+        uses: aws-actions/configure-aws-credentials@v4.0.1
+        with:
+          role-to-assume: ${{ secrets.AWS_ASSUME_ROLE }}
+          role-session-name: GitHub_to_AWS_via_FederatedOIDC
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Copy environment config
+        run: aws s3 cp s3://${{ secrets.AWS_FRONTEND_BUCKET }}/.env .
+
+      # - name: Set working directory to dist
+      #   run: cd dist
+
+      - name: Create ZIP deployment package
+        run: |
+           cd frontend
+           zip -r ../angular-app.zip ./dist
+
+      - name: Upload package to S3 bucket
+        run: aws s3 cp angular-app.zip s3://${{ secrets.AWS_FRONTEND_BUCKET }}/
+
+      - name: Create new ElasticBeanstalk Application Version
+        run: |
+          aws elasticbeanstalk create-application-version \
+          --application-name ${{ secrets.AWS_FRONTEND_APP }} \
+          --source-bundle S3Bucket="${{ secrets.AWS_FRONTEND_BUCKET }}",S3Key="angular-app.zip" \
+          --description "commit-sha-${{ github.sha }}"
+
+      - name: Deploy new ElasticBeanstalk Application Version
+        run: |
+          aws elasticbeanstalk update-environment --environment-name ${{ secrets.AWS_FRONTEND_APP_ENV }}
