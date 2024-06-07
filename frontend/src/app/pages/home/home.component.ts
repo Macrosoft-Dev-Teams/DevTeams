@@ -11,7 +11,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 })
 export class HomeComponent {
 	newTeamIds = new BehaviorSubject(-1);
-	creatingNewTeam = false;
+	creatingNewTeam:boolean = false;
 	currentChat?: Chat;
 
 	constructor(
@@ -38,6 +38,10 @@ export class HomeComponent {
 
 	onChatSelected(chat: any) {
 		this.creatingNewTeam = false;
+		this.currentChat = chat;
+	}
+
+	onSearchUserSelected(chat: any) {
 		this.currentChat = chat;
 	}
 

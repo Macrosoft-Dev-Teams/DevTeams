@@ -9,7 +9,7 @@ const verifier = CognitoJwtVerifier.create({
 
 const auth = async (req, res, next) => {
 	if (!req.headers['authorization']) {
-		res.status(401).json({ message: req.headers['authorization'] });
+		res.status(401).json({ message: 'Please provide valid credentials' });
 	} else {
 		const idToken = req.headers['authorization'].replace('Bearer ', '');
 
@@ -23,7 +23,7 @@ const auth = async (req, res, next) => {
 
 			next();
 		} catch (error) {
-			res.status(401).json({ message: error });
+			res.status(401).json({ message: 'Please provide valid credentials' });
 		}
 	}
 };

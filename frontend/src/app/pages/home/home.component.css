@@ -1,3 +1,29 @@
+:host {
+  padding: 2rem;
+  display: flex;
+  flex-wrap: wrap;
+  flex: 1;
+  height: 100vh;
+
+}
+
+.main-chat-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+  min-width: 70%;
+  font-size: 1rem;
+}
+
+app-chats-controller {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 30%;
+  max-width: 30%;
+}
+
 .btn {
   width: 100%;
   padding: 0.8rem 2rem;

@@ -8,6 +8,9 @@ import {
 	Chat,
 	WithTeamInviteId,
 	withUserId,
+	TeamInvite,
+	User,
+	withChatId,
 } from '../interfaces';
 
 @Injectable({
@@ -52,5 +55,29 @@ export class ApiService {
 		return this.httpService
 			.post<withUserId>('users/', {})
 			.pipe(map((response) => response.userId));
+	}
+
+	getTeamInvite(inviteId: number): Observable<TeamInvite> {
+		return this.httpService
+			.get<TeamInvite>(`teams/invites/${inviteId}`);
+	}
+
+	updateInvite(inviteId: number, accepted: boolean): Observable<any> {
+		return this.httpService.patch(`teams/invites/${inviteId}`, {
+			accepted
+		});
+	}
+
+	searchUserByEmail(userEmail: string): Observable<User> {
+		return this.httpService.get<User>(`users/search/${userEmail}`);
+	}
+
+	createChat(otherUserId: number): Observable<Chat> {
+		let chatId = this.httpService
+			.post<withChatId>(`chats/`, {
+				otherUserId,
+			})
+			.pipe(map((response) => response.chatId));
+		return this.httpService.get<Chat>(`chats/${chatId}`); 
 	}
 }

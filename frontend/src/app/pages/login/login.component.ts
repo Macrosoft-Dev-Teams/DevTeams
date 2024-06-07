@@ -7,6 +7,7 @@ import { ToastrService } from 'ngx-toastr';
 
 import { Hub } from 'aws-amplify/utils';
 import { ApiService } from '@src/app/services/api.service';
+import { HttpService } from '@src/app/services/http.service';
 
 @Component({
 	selector: 'app-login',
@@ -21,10 +22,12 @@ export class LoginComponent {
 		private authService: AuthService,
 		private apiService: ApiService,
 		private toastr: ToastrService,
+		private httpService: HttpService,
 	) {
-		Hub.listen('auth', (data) => {
+		Hub.listen('auth', async (data) => {
 			if (data.payload.event === 'signedIn') {
-				this.authService.handleAuthenticatedUser();
+				await httpService.setIdToken();
+				await this.authService.handleAuthenticatedUser();
 				this.addUser();
 			}
 		});

@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { Message } from '@src/app/interfaces';
 import { ApiService } from '@src/app/services/api.service';
-import { BehaviorSubject, Subscription, map, switchMap, timer } from 'rxjs';
+import { BehaviorSubject, Subscription, distinct, map, switchMap, timer } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
@@ -20,16 +20,17 @@ export class MessagesListComponent {
 	) {}
 
 	ngOnInit() {
-		this.subscription = timer(0, 2000)
+		this.subscription = timer(0, 5000)
 			.pipe(
 				switchMap(() =>
 					this.apiService.listMessages(this.chatId).pipe(
+						distinct(messages => JSON.stringify(messages)),
 						map((messages) =>
 							messages.map<Message>((message) => {
 								return {
 									...message,
 									displayName: message.isCurrentUser
-										? 'You'
+										? 'You' // style receiver msg
 										: message.displayName,
 								};
 							}),
@@ -52,4 +53,17 @@ export class MessagesListComponent {
 	ngOnDestroy() {
 		this.subscription.unsubscribe();
 	}
+
+	isInviteMessage(message: Message) {
+		if (message.messageText) {
+			return message.messageText.indexOf('?teaminvite=') !== -1;
+		} else {
+			return false;
+		}
+	}
+
+	getTeamInviteId(messageText: string): number | undefined {
+		const matches = RegExp(/\d+/).exec(messageText);
+		return matches ? parseInt(matches[0]) : undefined;
+	} 
 }

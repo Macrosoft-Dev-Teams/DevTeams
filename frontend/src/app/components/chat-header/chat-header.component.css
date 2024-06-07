@@ -1,0 +1,54 @@
+:host {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	border-bottom: 1px var(--light-gray) solid;
+	padding: 1rem;
+}
+
+button {
+	display: inline-flex;
+	align-items: center;
+	font-size: 1.4rem;
+	line-height: 1.5rem;
+	border: none;
+	border-radius: 0.5rem;
+	padding: 1rem 3rem;
+	cursor: pointer;
+	color: var(--light-color);
+	background-color: var(--blue-color);
+	text-decoration: none;
+}
+
+button:hover {
+	background-color: var( --darker-blue-color);
+}
+
+.chat-name {
+  align-self: center;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  text-align: center;
+  gap: 1rem;
+}
+
+mat-icon {
+	background-color: var(--bg-color);
+	font-size: 5rem;
+	height: 5rem;
+	width: 5rem;
+}
+
+input[type='text'] {
+	/* Style properties here */
+	font-size: 1rem;
+	padding: 1rem 2rem;
+	border: 0.1rem var(--light-gray) solid;
+	border-radius: 0.5rem;
+}
+
+input[type='text']:active {
+	border-color: var(--light-gray);
+	transition: 0.5s;
+}

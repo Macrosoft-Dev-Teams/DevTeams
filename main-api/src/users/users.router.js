@@ -1,7 +1,7 @@
 const { Router } = require('express');
 
 const { getUsers } = require('./users.cognito');
-const { safeAddUser } = require('./users.db');
+const { safeAddUser, getUserByEmail } = require('./users.db');
 
 const usersRouter = Router();
 
@@ -21,6 +21,20 @@ usersRouter.post('/', async (req, res) => {
 
 	const userId = await safeAddUser(email, name);
 	res.status(201).json({ userId });
+});
+
+usersRouter.get('/search/:userEmail', async (req, res) => {
+	const response = await getUserByEmail(
+		res.locals.userId,
+		req.params.userEmail,
+	);
+	if (response == undefined) {
+		res.status(200).json({ userId: -1 });
+	} else if (!response.ok) {
+		res.status(500).json(response.error);
+	} else {
+		res.status(200).json(response.data);
+	}
 });
 
 module.exports = {

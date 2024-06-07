@@ -1,0 +1,5 @@
+<p>{{ message }}</p>
+<section *ngIf="showButtons">
+	<button type="button" (click)="updateInviteState(false)">Decline</button>
+	<button type="button" (click)="updateInviteState(true)">Accept</button>
+</section>

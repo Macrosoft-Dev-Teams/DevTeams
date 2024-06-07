@@ -6,6 +6,7 @@
   --button-text-color: #f0f0f0;
 
 	--dark-color: #333;
+  --light-gray: #D3D3D3;
 	--light-color: #f0f0f0;
   --blue-color: #3f51b5;
   --darker-blue-color: #2f3e9c;
@@ -22,6 +23,7 @@
 }
 
 * {
+  font-family: Roboto, "Helvetica Neue", sans-serif;
   background-color: var(--background-color);
   color: var(--primary-text-color);
 }

@@ -1,8 +1,17 @@
+<div class="messages">
 <ul *ngFor="let message of messages | async">
-  <li>
-    <em>{{ message.displayName }}</em>
-    <p>{{ message.messageText }}</p>
-    <footer>{{ message.sentAt | asTimeAgo }}</footer>
-  </li>
+  @if(isInviteMessage(message)) {
+    <app-team-invite-message [inviteId]="getTeamInviteId(message.messageText ?? '') ?? -1" [message]="message.messageText ?? ''" />
+  } @else {
+    <li [ngClass]="message.isCurrentUser ? 'msg-sender' : 'msg-receiver'">
+      <em>{{ message.displayName }}</em>
+      <p>{{ message.messageText }}</p>
+      <footer>{{ message.sentAt | asTimeAgo }}</footer>
+    </li>
+  }
 </ul>
-<app-chat-input [chatId]="chatId" (onMessageSent)="onMessageSent($event)" />
+</div>
+
+<div class="enter-msg">
+  <app-chat-input [chatId]="chatId" (onMessageSent)="onMessageSent($event)" />
+</div>
