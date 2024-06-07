@@ -10,14 +10,38 @@ const { usersRouter } = require('./users/users.router');
 
 const { auth } = require('./auth');
 
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 4200;
 const app = express();
 
 const helmet = require('helmet');
 const cors = require('cors');
 
 app.use(express.json());
-app.use(helmet());
+app.use(helmet({
+  contentSecurityPolicy: {
+    // useDefaults: true,
+    directives: {
+      "connect-src": [
+        "'self'",
+      ],
+      "frame-src": [
+        "'none'",
+      ],
+      "script-src": [
+        "'self'",
+      ],
+      "img-src": [
+        "'self'",
+      ],
+      "object-src":[
+        "'self'",
+      ],
+			"script-src-attr": [
+        "'self'"
+      ],
+    }
+  }
+}));
 app.use(cors());
 
 const authenticatedApiRouter = express.Router();
